@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_form.dart';
+import 'package:neofit_mobile/screens/login/login_form.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

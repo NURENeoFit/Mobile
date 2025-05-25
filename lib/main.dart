@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'screens/login/login_screen.dart';
-import 'screens/home.dart';
-import 'screens/profile.dart';
+import 'package:neofit_mobile/screens/login/login_screen.dart';
+import 'package:neofit_mobile/screens/home.dart';
+import 'package:neofit_mobile/screens/profile.dart';
 
-import 'widgets/bottom_nav_bar.dart';
+import 'package:neofit_mobile/widgets/bottom_nav_bar.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'login_controller.dart';
-import 'login_widgets.dart';
+import 'package:neofit_mobile/screens/login/login_controller.dart';
+import 'package:neofit_mobile/screens/login/login_widgets.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -106,7 +106,7 @@ class _LoginFormState extends State<LoginForm> {
             onPressed: () {
               debugPrint('Go to register screen (placeholder)');
             },
-            child: const Text("Don't have an account? Register"),
+            child: const Text("Don't have an account? Sign up"),
           ),
         ],
       ),
