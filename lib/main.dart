@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:neofit_mobile/screens/login/login_screen.dart';
+import 'package:neofit_mobile/screens/register/register_screen.dart';
 import 'package:neofit_mobile/screens/home.dart';
 import 'package:neofit_mobile/screens/profile.dart';
 
@@ -17,6 +18,10 @@ final _router = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const RegisterScreen(),
     ),
     GoRoute(
       path: '/',

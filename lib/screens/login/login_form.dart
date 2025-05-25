@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:neofit_mobile/widgets/or_divider.dart';
 import 'package:neofit_mobile/screens/login/login_controller.dart';
-import 'package:neofit_mobile/screens/login/login_widgets.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -89,7 +89,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 16),
 
-          const LoginDivider(),
+          const CustomDivider(),
           const SizedBox(height: 16),
 
           SizedBox(
@@ -105,6 +105,7 @@ class _LoginFormState extends State<LoginForm> {
           TextButton(
             onPressed: () {
               debugPrint('Go to register screen (placeholder)');
+              context.go("/register");
             },
             child: const Text("Don't have an account? Sign up"),
           ),
