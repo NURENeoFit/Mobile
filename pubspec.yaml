@@ -37,6 +37,7 @@ dependencies:
 
   # My dependencies
   go_router: ^13.0.0
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
