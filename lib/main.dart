@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:neofit_mobile/screens/login/login_screen.dart';
 import 'package:neofit_mobile/screens/register/register_screen.dart';
 import 'package:neofit_mobile/screens/home.dart';
+import 'package:neofit_mobile/screens/calories.dart';
+import 'package:neofit_mobile/screens/trainings.dart';
 import 'package:neofit_mobile/screens/profile.dart';
 
 import 'package:neofit_mobile/widgets/bottom_nav_bar.dart';
@@ -53,6 +55,8 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = const [
     HomeScreen(),
+    CaloriesScreen(),
+    TrainingsScreen(),
     ProfileScreen(),
   ];
 
