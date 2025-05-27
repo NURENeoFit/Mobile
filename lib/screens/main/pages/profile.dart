@@ -13,21 +13,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: ListView(
-        padding: const EdgeInsets.all(12),
-        children: [
-          _buildTile(Icons.person, 'My details', onTap: () {}),
-          _buildTile(Icons.star, 'Abonement', onTap: () {}),
-          _buildTile(Icons.stacked_bar_chart, 'Statistics', onTap: () {}),
-          _buildSwitchTile(Icons.notifications, 'Notifications', notifications,
-                  (val) => setState(() => notifications = val) ),
-          _buildTile(Icons.settings, 'Settings', onTap: () {}),
-          _buildTile(Icons.logout, 'Logout', onTap: () { context.go('/login'); }),
-        ],
-      ),
+    return ListView(
+      padding: const EdgeInsets.all(12),
+      children: [
+        _buildTile(Icons.person, 'My details', onTap: () {}),
+        _buildTile(Icons.star, 'Abonement', onTap: () {}),
+        _buildTile(Icons.stacked_bar_chart, 'Statistics', onTap: () {}),
+        _buildSwitchTile(Icons.notifications, 'Notifications', notifications,
+                (val) => setState(() => notifications = val) ),
+        _buildTile(Icons.settings, 'Settings', onTap: () {}),
+        _buildTile(Icons.logout, 'Logout', onTap: () { context.go('/login'); }),
+      ],
     );
   }
 
