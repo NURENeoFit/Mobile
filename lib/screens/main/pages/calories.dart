@@ -18,32 +18,10 @@ class _CaloriesPageState extends State<CaloriesPage> {
 
   int get _totalCalories => _breakfastTotal + _lunchTotal + _dinnerTotal;
 
-  void _addCalories(TextEditingController controller, void Function(int) update) {
-    final value = int.tryParse(controller.text);
-
-    if (value != null && value > 0) {
-      if (_totalCalories + value > 30000) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Total calories cannot exceed 30,000!'),
-            backgroundColor: Color(0xFFB00010),
-            duration: Duration(seconds: 3),
-          ),
-        );
-
-        return;
-      }
-
-      update(value);
-      controller.clear();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FB),
-      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Calculate Calories'),
         centerTitle: true,
@@ -53,21 +31,30 @@ class _CaloriesPageState extends State<CaloriesPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              _buildMealCard('Breakfast', _breakfastController, _breakfastTotal, (val) {
-                setState(() => _breakfastTotal += val);
-              }),
-              _buildMealCard('Lunch', _lunchController, _lunchTotal, (val) {
-                setState(() => _lunchTotal += val);
-              }),
-              _buildMealCard('Dinner', _dinnerController, _dinnerTotal, (val) {
-                setState(() => _dinnerTotal += val);
-              }),
+              _buildMealCard(
+                title: 'Breakfast',
+                controller: _breakfastController,
+                total: _breakfastTotal,
+                update: (val) => setState(() => _breakfastTotal += val),
+              ),
+              _buildMealCard(
+                title: 'Lunch',
+                controller: _lunchController,
+                total: _lunchTotal,
+                update: (val) => setState(() => _lunchTotal += val),
+              ),
+              _buildMealCard(
+                title: 'Dinner',
+                controller: _dinnerController,
+                total: _dinnerTotal,
+                update: (val) => setState(() => _dinnerTotal += val),
+              ),
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
@@ -83,67 +70,100 @@ class _CaloriesPageState extends State<CaloriesPage> {
     );
   }
 
-  Widget _buildMealCard(String title, TextEditingController controller, int total, void Function(int) update) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: TextStyle(
+  Widget _buildMealCard({
+    required String title,
+    required TextEditingController controller,
+    required int total,
+    required void Function(int) update,
+  }) {
+    String? errorText;
+
+    return StatefulBuilder(
+      builder: (context, setLocalState) {
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).primaryColor
-              )
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                flex: 5,
-                child: TextField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Calories',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
-                    isDense: true,
-                  ),
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 1,
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Calories',
+                  errorText: errorText,
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
+                  isDense: true,
+                  contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                ),
+                onChanged: (value) {
+                  final input = int.tryParse(value);
+                  setLocalState(() {
+                    if (input == null || input <= 0) {
+                      errorText = 'Enter a valid number';
+                    } else if (_totalCalories + input > 30000) {
+                      errorText = 'Total calories cannot exceed 30,000!';
+                    } else {
+                      errorText = null;
+                    }
+                  });
+                },
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => _addCalories(controller, update),
+                  onPressed: () {
+                    final input = int.tryParse(controller.text);
+                    if (input != null &&
+                        input > 0 &&
+                        _totalCalories + input <= 30000) {
+                      update(input);
+                      controller.clear();
+                      setLocalState(() {
+                        errorText = null;
+                      });
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: Icon(Icons.add),
+                  child: const Text('Add'),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'Total: $total',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 6),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-                'Total: $total',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
