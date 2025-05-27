@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neofit_mobile/screens/main/pages/details.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,17 +17,36 @@ class _ProfilePageState extends State<ProfilePage> {
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        _buildTile(Icons.person, 'My details', onTap: () {}),
+        _buildTile(
+          Icons.person,
+          'My details',
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const DetailsPage()),
+            );
+          },
+        ),
         _buildTile(Icons.star, 'Abonement', onTap: () {}),
         _buildTile(Icons.stacked_bar_chart, 'Statistics', onTap: () {}),
-        _buildSwitchTile(Icons.notifications, 'Notifications', notifications,
-                (val) => setState(() => notifications = val) ),
+        _buildSwitchTile(
+          Icons.notifications,
+          'Notifications',
+          notifications,
+              (val) => setState(() => notifications = val),
+        ),
         _buildTile(Icons.settings, 'Settings', onTap: () {}),
-        _buildTile(Icons.logout, 'Logout', onTap: () { context.go('/login'); }),
+        _buildTile(
+          Icons.logout,
+          'Logout',
+          onTap: () {
+            context.go('/login');
+          },
+        ),
       ],
     );
   }
 
+  // Builds a ListTile wrapped in a Card
   Widget _buildTile(IconData icon, String title,
       {String? subtitle, VoidCallback? onTap}) {
     return Card(
@@ -35,6 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
       margin: const EdgeInsets.symmetric(vertical: 6),
       color: Colors.white,
       child: ListTile(
+        splashColor: Colors.transparent,
         leading: Icon(icon, color: Colors.deepPurple, size: 24),
         title: Text(
           title,
@@ -52,7 +73,9 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildSwitchTile(IconData icon, String title, bool value, ValueChanged<bool> onChanged) {
+  // Builds a ListTile with a switch
+  Widget _buildSwitchTile(
+      IconData icon, String title, bool value, ValueChanged<bool> onChanged) {
     return Card(
       elevation: 1.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
