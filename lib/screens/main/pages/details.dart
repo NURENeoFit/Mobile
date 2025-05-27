@@ -6,6 +6,11 @@ class DetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Simulated user data
+    final String username = 'anna.smith';
+    final String email = 'anna@example.com';
+    final String phone = '+1234567890';
+    final String dateOfBirth = '2006-04-15';
+
     final String firstName = 'Anna';
     final String lastName = 'Smith';
     final String gender = 'Female';
@@ -14,6 +19,22 @@ class DetailsPage extends StatelessWidget {
     final String weight = '65.0 kg';
     final String units = 'kg / cm';
     final String target = 'Build muscles';
+
+    // Account info section
+    final Map<String, String?> accountDetails = {
+      'Username': username,
+      'Email': email,
+      'Phone': phone,
+      'Date of birth': dateOfBirth,
+      'Change password': null, // functional item
+    };
+
+    final Map<String, VoidCallback> accountActions = {
+      'Change password': () {
+        // TODO: implement password change logic
+        debugPrint('Change password tapped');
+      },
+    };
 
     // Profile info section
     final Map<String, String?> profileDetails = {
@@ -32,6 +53,11 @@ class DetailsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _buildCardSection(
+            title: 'Account',
+            entries: accountDetails,
+            tapActions: accountActions,
+          ),
           const SizedBox(height: 24),
           _buildCardSection(
             title: 'Profile',
@@ -45,6 +71,7 @@ class DetailsPage extends StatelessWidget {
   Widget _buildCardSection({
     required Map<String, String?> entries,
     String? title,
+    Map<String, VoidCallback>? tapActions,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,6 +95,7 @@ class DetailsPage extends StatelessWidget {
           child: Column(
             children: List.generate(entries.length, (index) {
               final entry = entries.entries.elementAt(index);
+              final onTap = tapActions?[entry.key];
 
               return Column(
                 children: [
@@ -82,6 +110,7 @@ class DetailsPage extends StatelessWidget {
                       ),
                     )
                         : const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                    onTap: onTap,
                   ),
                   if (index < entries.length - 1)
                     const Divider(height: 1, color: Color(0xFFE0E0E0)),
