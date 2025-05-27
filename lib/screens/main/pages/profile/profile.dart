@@ -29,7 +29,12 @@ class _ProfilePageState extends State<ProfilePage> {
           onTap: () {
             context.push('/profile/abonnement');
           }),
-        _buildTile(Icons.star, 'Favourites', onTap: () {}),
+        _buildTile(
+          Icons.star,
+          'Favourites',
+          onTap: () {
+            context.push('/profile/favourites');
+          }),
         _buildTile(Icons.stacked_bar_chart, 'Statistics', onTap: () {}),
         _buildSwitchTile(
           Icons.notifications,
