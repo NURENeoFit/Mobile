@@ -20,6 +20,13 @@ class DetailsPage extends StatelessWidget {
     final String units = 'kg / cm';
     final String target = 'Build muscles';
 
+    // Recommendation data
+    final Map<String, String> recommendations = {
+      'Calorie intake': '2509',
+      'Water intake': '2,5 l',
+      'Steps per day': '8 000',
+    };
+
     // Account info section
     final Map<String, String?> accountDetails = {
       'Username': username,
@@ -62,6 +69,11 @@ class DetailsPage extends StatelessWidget {
           _buildCardSection(
             title: 'Profile',
             entries: profileDetails,
+          ),
+          const SizedBox(height: 24),
+          _buildCardSection(
+            title: 'Recommendations',
+            entries: recommendations,
           ),
         ],
       ),
