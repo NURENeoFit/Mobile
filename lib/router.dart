@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:neofit_mobile/screens/login/login_screen.dart';
 import 'package:neofit_mobile/screens/register/register_screen.dart';
-import 'package:neofit_mobile/screens/root.dart';
+import 'package:neofit_mobile/screens/main/root.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',

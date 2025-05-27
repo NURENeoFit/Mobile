@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:neofit_mobile/screens/home.dart';
-import 'package:neofit_mobile/screens/calories.dart';
-import 'package:neofit_mobile/screens/trainings.dart';
-import 'package:neofit_mobile/screens/profile.dart';
+import 'package:neofit_mobile/screens/main/pages/home.dart';
+import 'package:neofit_mobile/screens/main/pages/calories.dart';
+import 'package:neofit_mobile/screens/main/pages/trainings.dart';
+import 'package:neofit_mobile/screens/main/pages/profile.dart';
 import 'package:neofit_mobile/widgets/bottom_nav_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -16,11 +16,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    CaloriesScreen(),
-    TrainingsScreen(),
-    ProfileScreen(),
+  final List<Widget> _pages = const [
+    HomePage(),
+    CaloriesPage(),
+    TrainingsPage(),
+    ProfilePage(),
   ];
 
   void _onTap(int index) {
@@ -34,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _screens,
+        children: _pages,
       ),
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: _selectedIndex,
