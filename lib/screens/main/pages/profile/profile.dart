@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:neofit_mobile/screens/main/pages/details.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

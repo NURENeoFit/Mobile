@@ -1,8 +1,11 @@
 import 'package:go_router/go_router.dart';
 
 import 'package:neofit_mobile/screens/login/login_screen.dart';
-import 'package:neofit_mobile/screens/main/pages/details.dart';
-import 'package:neofit_mobile/screens/main/pages/profile.dart';
+import 'package:neofit_mobile/screens/main/pages/profile/profile.dart';
+import 'package:neofit_mobile/screens/main/pages/profile/details.dart';
+import 'package:neofit_mobile/screens/main/pages/profile/favourites.dart';
+import 'package:neofit_mobile/screens/main/pages/profile/statistics.dart';
+import 'package:neofit_mobile/screens/main/pages/profile/abonement.dart';
 import 'package:neofit_mobile/screens/register/register_screen.dart';
 import 'package:neofit_mobile/screens/main/root.dart';
 
@@ -29,6 +32,18 @@ final GoRouter appRouter = GoRouter(
           path: 'details',
           builder: (context, state) => const DetailsPage(),
         ),
+        // GoRoute(
+        //   path: 'statistics',
+        //   builder: (context, state) => const StatisticsPage(),
+        // ),
+        // GoRoute(
+        //   path: 'favourites',
+        //   builder: (context, state) => const FavouritesPage(),
+        // ),
+        // GoRoute(
+        //   path: 'abonement',
+        //   builder: (context, state) => const AbonementPage(),
+        // ),
       ],
     ),
   ],
