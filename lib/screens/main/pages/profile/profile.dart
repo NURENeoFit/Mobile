@@ -35,7 +35,12 @@ class _ProfilePageState extends State<ProfilePage> {
           onTap: () {
             context.push('/profile/favourites');
           }),
-        _buildTile(Icons.stacked_bar_chart, 'Statistics', onTap: () {}),
+        _buildTile(
+          Icons.stacked_bar_chart,
+          'Statistics',
+          onTap: () {
+            context.push('/profile/statistics');
+          }),
         _buildSwitchTile(
           Icons.notifications,
           'Notifications',
