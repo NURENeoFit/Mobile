@@ -21,9 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Icons.person,
           'My details',
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const DetailsPage()),
-            );
+            context.push('/profile/details');
           },
         ),
         _buildTile(Icons.star, 'Abonement', onTap: () {}),
