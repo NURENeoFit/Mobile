@@ -40,10 +40,10 @@ final GoRouter appRouter = GoRouter(
         //   path: 'favourites',
         //   builder: (context, state) => const FavouritesPage(),
         // ),
-        // GoRoute(
-        //   path: 'abonnement',
-        //   builder: (context, state) => const AbonnementPage(),
-        // ),
+        GoRoute(
+          path: 'abonnement',
+          builder: (context, state) => const AbonnementPage(),
+        ),
       ],
     ),
   ],

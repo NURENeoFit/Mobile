@@ -23,7 +23,12 @@ class _ProfilePageState extends State<ProfilePage> {
             context.push('/profile/details');
           },
         ),
-        _buildTile(Icons.card_membership, 'Abonnement', onTap: () {}),
+        _buildTile(
+          Icons.card_membership,
+          'Abonnement',
+          onTap: () {
+            context.push('/profile/abonnement');
+          }),
         _buildTile(Icons.star, 'Favourites', onTap: () {}),
         _buildTile(Icons.stacked_bar_chart, 'Statistics', onTap: () {}),
         _buildSwitchTile(
