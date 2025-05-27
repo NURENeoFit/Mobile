@@ -108,7 +108,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
           Row(
             children: [
               Expanded(
-                flex: 8,
+                flex: 5,
                 child: TextField(
                   controller: controller,
                   keyboardType: TextInputType.number,
@@ -121,7 +121,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                flex: 3,
+                flex: 1,
                 child: ElevatedButton(
                   onPressed: () => _addCalories(controller, update),
                   style: ElevatedButton.styleFrom(
@@ -129,7 +129,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text('Add'),
+                  child: Icon(Icons.add),
                 ),
               ),
             ],
