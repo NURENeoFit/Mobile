@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:neofit_mobile/design/dimensions.dart';
+
 class TrainingsPage extends StatefulWidget {
   const TrainingsPage({super.key});
 
@@ -97,16 +99,16 @@ class _TrainingsPageState extends State<TrainingsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: containerBorderRadius12),
         elevation: 2,
-        color: Theme.of(context).colorScheme.surface,
+        color: ColorScheme.of(context).surface,
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           leading: CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            backgroundColor: ColorScheme.of(context).primaryContainer,
             child: Icon(
               iconData,
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              color: ColorScheme.of(context).onPrimaryContainer,
             ),
           ),
           title: Text(
@@ -140,7 +142,7 @@ class _TrainingsPageState extends State<TrainingsPage> {
                 hintText: 'Search trainings...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: containerBorderRadius12,
                 ),
               ),
             ),
