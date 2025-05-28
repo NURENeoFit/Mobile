@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:neofit_mobile/design/dimensions.dart';
+
 class CaloriesPage extends StatefulWidget {
   const CaloriesPage({super.key});
 
@@ -42,7 +44,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F6FB),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Calculate Calories'),
@@ -53,13 +55,13 @@ class _CaloriesPageState extends State<CaloriesPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              _buildMealCard('Breakfast', _breakfastController, _breakfastTotal, (val) {
+              _buildMealCard(context, 'Breakfast', _breakfastController, _breakfastTotal, (val) {
                 setState(() => _breakfastTotal += val);
               }),
-              _buildMealCard('Lunch', _lunchController, _lunchTotal, (val) {
+              _buildMealCard(context, 'Lunch', _lunchController, _lunchTotal, (val) {
                 setState(() => _lunchTotal += val);
               }),
-              _buildMealCard('Dinner', _dinnerController, _dinnerTotal, (val) {
+              _buildMealCard(context, 'Dinner', _dinnerController, _dinnerTotal, (val) {
                 setState(() => _dinnerTotal += val);
               }),
               const SizedBox(height: 8),
@@ -67,12 +69,15 @@ class _CaloriesPageState extends State<CaloriesPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
+                  color: ColorScheme.of(context).primary.withValues(alpha: 0.1),
+                  borderRadius: containerBorderRadius12,
                 ),
                 child: Text(
                   'Total calories: $_totalCalories',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: fontSizeHeader18,
+                    fontWeight: FontWeight.bold
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -83,15 +88,15 @@ class _CaloriesPageState extends State<CaloriesPage> {
     );
   }
 
-  Widget _buildMealCard(String title, TextEditingController controller, int total, void Function(int) update) {
+  Widget _buildMealCard(BuildContext context, String title, TextEditingController controller, int total, void Function(int) update) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: ColorScheme.of(context).surface,
+        borderRadius: containerBorderRadius12,
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
+          BoxShadow(color: ColorScheme.of(context).shadow, blurRadius: 4, offset: Offset(0, 2))
         ],
       ),
       child: Column(
@@ -99,9 +104,9 @@ class _CaloriesPageState extends State<CaloriesPage> {
         children: [
           Text(title,
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).primaryColor
+                fontSize: fontSizeHeader18,
+                fontWeight: FontWeight.w600,
+                color: ColorScheme.of(context).primary
               )
           ),
           const SizedBox(height: 12),
@@ -114,7 +119,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: 'Calories',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+                    border: OutlineInputBorder(borderRadius: containerBorderRadius12),
                     isDense: true,
                   ),
                 ),
@@ -125,8 +130,8 @@ class _CaloriesPageState extends State<CaloriesPage> {
                 child: ElevatedButton(
                   onPressed: () => _addCalories(controller, update),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.white,
+                    backgroundColor: ColorScheme.of(context).primary,
+                    foregroundColor: ColorScheme.of(context).onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   child: const Text('Add'),
@@ -139,7 +144,10 @@ class _CaloriesPageState extends State<CaloriesPage> {
             alignment: Alignment.centerRight,
             child: Text(
                 'Total: $total',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)
+                style: const TextStyle(
+                  fontSize: fontSizeGeneralText16,
+                  fontWeight: FontWeight.w500
+                )
             ),
           ),
         ],

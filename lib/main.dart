@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'NeoFit',
-      theme: customAppTheme,
+      theme: testAppTheme2,
       routerConfig: appRouter,
     );
   }

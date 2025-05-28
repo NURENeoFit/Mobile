@@ -38,7 +38,6 @@ class _MainScreenState extends State<MainScreen> {
       body: HomePage(),
       fab: null,
       showBottomNav: true,
-      backgroundColor: const Color(0xFFF8F5FA)
     ),
     _ScreenConfig(
       appBar: null, // no AppBar
@@ -71,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
     final current = _screens[_selectedIndex];
 
     return Scaffold(
-      backgroundColor: current.backgroundColor ?? Theme.of(context).colorScheme.surface,
+      backgroundColor: current.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       appBar: current.appBar,
       body: current.body,
       floatingActionButton: current.fab,

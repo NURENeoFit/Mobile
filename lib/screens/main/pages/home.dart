@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import 'package:neofit_mobile/design/dimensions.dart';
+
 class Training {
   final TimeOfDay time;
   final String coach;
@@ -25,6 +27,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+
+  final String activeData = 'June 30';
 
   final Map<DateTime, List<Training>> _plans = {
     DateTime.utc(2025, 5, 28): [
@@ -58,14 +62,23 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.teal.shade600,
+              color: ColorScheme.of(context).secondary,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text('Membership active\nuntil June 30', style: TextStyle(color: Colors.white, fontSize: 16)),
-                Icon(Icons.chevron_right, color: Colors.white),
+              children: [
+                Text(
+                  'Membership active\nuntil $activeData',
+                  style: TextStyle(
+                    color: ColorScheme.of(context).onSecondary,
+                    fontSize: fontSizeGeneralText16
+                  )
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  color: ColorScheme.of(context).onSecondary
+                ),
               ],
             ),
           ),
@@ -75,23 +88,35 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              color: ColorScheme.of(context).surface,
+              borderRadius: containerBorderRadius12,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('🎯 Goal', style: TextStyle(fontSize: 16)),
+                const Text(
+                  '🎯 Goal',
+                  style: TextStyle(fontSize: fontSizeGeneralText16)
+                ),
                 const SizedBox(height: 4),
-                const Text('Weight loss', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Weight loss',
+                  style: TextStyle(
+                    fontSize: fontSizeHeader18,
+                    fontWeight: FontWeight.bold
+                  )
+                ),
                 const SizedBox(height: 12),
                 LinearProgressIndicator(
                   value: 0.5,
-                  backgroundColor: Colors.grey.shade300,
+                  backgroundColor: ColorScheme.of(context).onSurface.withValues(alpha: 0.1),
                   color: Colors.blue,
                 ),
                 const SizedBox(height: 8),
-                const Text('5 kg left', style: TextStyle(color: Colors.grey)),
+                Text(
+                  '5 kg left',
+                  style: TextStyle(color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4))
+                ),
               ],
             ),
           ),
@@ -101,13 +126,19 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              color: ColorScheme.of(context).surface,
+              borderRadius: containerBorderRadius12,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Your Schedule', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Your Schedule',
+                  style: TextStyle(
+                    fontSize: fontSizeHeader18,
+                    fontWeight: FontWeight.bold
+                  )
+                ),
                 const SizedBox(height: 12),
                 TableCalendar(
                   calendarFormat: CalendarFormat.week,
@@ -128,13 +159,13 @@ class _HomePageState extends State<HomePage> {
                     formatButtonVisible: false,
                     titleCentered: true,
                   ),
-                  calendarStyle: const CalendarStyle(
+                  calendarStyle: CalendarStyle(
                     todayDecoration: BoxDecoration(
-                      color: Colors.deepPurple,
+                      color: ColorScheme.of(context).primary,
                       shape: BoxShape.circle,
                     ),
                     selectedDecoration: BoxDecoration(
-                      color: Colors.purpleAccent,
+                      color: ColorScheme.of(context).tertiary,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -142,7 +173,10 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 16),
                 Text(
                   'Plans for ${selected.toLocal().toString().split(' ')[0]}',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: fontSizeGeneralText16,
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
                 const SizedBox(height: 8),
                 ..._getPlansForDay(selected).map((training) {
@@ -150,23 +184,27 @@ class _HomePageState extends State<HomePage> {
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(8),
+                      color: ColorScheme.of(context).surfaceContainer,
+                      borderRadius: containerBorderRadius12,
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.fitness_center, color: Colors.deepPurple),
+                        Icon(
+                          Icons.fitness_center,
+                          color: ColorScheme.of(context).primary
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('${training.type} with ${training.coach}',
-                                  style: const TextStyle(fontWeight: FontWeight.w500)),
+                              Text(
+                                '${training.type} with ${training.coach}',
+                                style: const TextStyle(fontWeight: FontWeight.w500)),
                               const SizedBox(height: 4),
                               Text(
                                 '${training.time.format(context)} • ${training.isGroup ? 'Group' : 'Individual'}',
-                                style: const TextStyle(color: Colors.grey),
+                                style: TextStyle(color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4)),
                               ),
                             ],
                           ),
@@ -176,7 +214,10 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
                 if (_getPlansForDay(selected).isEmpty)
-                  const Text('No plans for this date.', style: TextStyle(color: Colors.grey)),
+                  Text(
+                    'No plans for this date.',
+                    style: TextStyle(color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4))
+                  ),
               ],
             ),
           ),
