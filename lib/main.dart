@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neofit_mobile/design/colors.dart';
 import 'package:neofit_mobile/router.dart';
 
 void main() {
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'NeoFit',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: customAppTheme,
       routerConfig: appRouter,
     );
   }
