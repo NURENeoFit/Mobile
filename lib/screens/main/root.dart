@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neofit_mobile/screens/main/pages/home.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/profile.dart';
 import 'package:neofit_mobile/screens/main/pages/calories.dart';
-import 'package:neofit_mobile/screens/main/pages/trainings.dart';
+import 'package:neofit_mobile/screens/main/pages/trainings/trainings.dart';
 import 'package:neofit_mobile/widgets/bottom_nav_bar.dart';
 
 class _ScreenConfig {

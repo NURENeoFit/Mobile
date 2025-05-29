@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:neofit_mobile/models/workout.dart';
 
 class TrainingsPage extends StatefulWidget {
   const TrainingsPage({super.key});
@@ -8,70 +10,22 @@ class TrainingsPage extends StatefulWidget {
 }
 
 class _TrainingsPageState extends State<TrainingsPage> {
-  final List<Map<String, String>> allExercises = [
-    {
-      'name': 'Morning Cardio',
-      'coach': 'Coach: Anna Ivanova',
-      'icon': 'directions_run',
-    },
-    {
-      'name': 'Strength Training',
-      'coach': 'Coach: Ivan Smirnov',
-      'icon': 'fitness_center',
-    },
-    {
-      'name': 'Evening Yoga',
-      'coach': 'Coach: Olga Petrova',
-      'icon': 'self_improvement',
-    },
-    {
-      'name': 'Functional HIIT',
-      'coach': 'Coach: Max Kravtsov',
-      'icon': 'sports',
-    },
-    {
-      'name': 'Stretching & Flexibility',
-      'coach': 'Coach: Nina Sharapova',
-      'icon': 'self_improvement',
-    },
-    {
-      'name': 'Boxing Basics',
-      'coach': 'Coach: Alex Stone',
-      'icon': 'sports_martial_arts',
-    },
-    {
-      'name': 'Pilates Core',
-      'coach': 'Coach: Elena Markova',
-      'icon': 'accessibility_new',
-    },
-    {
-      'name': 'Tabata Blast',
-      'coach': 'Coach: John Brooks',
-      'icon': 'fitness_center',
-    },
-    {
-      'name': 'Zumba Energy',
-      'coach': 'Coach: Karina Lopez',
-      'icon': 'music_note',
-    },
-    {
-      'name': 'CrossFit Starter',
-      'coach': 'Coach: Dmytro Sydorenko',
-      'icon': 'directions_run',
-    },
-    {
-      'name': 'Bodyweight Circuit',
-      'coach': 'Coach: Vitalii Romanov',
-      'icon': 'fitness_center',
-    },
-    {
-      'name': 'Balance & Mobility',
-      'coach': 'Coach: Sofia Kuznetsova',
-      'icon': 'accessibility',
-    },
+  final List<Workout> allExercises = [
+    Workout(id: '1', name: 'Morning Cardio', coach: 'Coach: Anna Ivanova', icon: 'directions_run'),
+    Workout(id: '2', name: 'Strength Training', coach: 'Coach: Ivan Smirnov', icon: 'fitness_center'),
+    Workout(id: '3', name: 'Evening Yoga', coach: 'Coach: Olga Petrova', icon: 'self_improvement'),
+    Workout(id: '4', name: 'Functional HIIT', coach: 'Coach: Max Kravtsov', icon: 'sports'),
+    Workout(id: '5', name: 'Stretching & Flexibility', coach: 'Coach: Nina Sharapova', icon: 'self_improvement'),
+    Workout(id: '6', name: 'Boxing Basics', coach: 'Coach: Alex Stone', icon: 'sports_martial_arts'),
+    Workout(id: '7', name: 'Pilates Core', coach: 'Coach: Elena Markova', icon: 'accessibility_new'),
+    Workout(id: '8', name: 'Tabata Blast', coach: 'Coach: John Brooks', icon: 'fitness_center'),
+    Workout(id: '9', name: 'Zumba Energy', coach: 'Coach: Karina Lopez', icon: 'music_note'),
+    Workout(id: '10', name: 'CrossFit Starter', coach: 'Coach: Dmytro Sydorenko', icon: 'directions_run'),
+    Workout(id: '11', name: 'Bodyweight Circuit', coach: 'Coach: Vitalii Romanov', icon: 'fitness_center'),
+    Workout(id: '12', name: 'Balance & Mobility', coach: 'Coach: Sofia Kuznetsova', icon: 'accessibility'),
   ];
 
-  List<Map<String, String>> filteredExercises = [];
+  List<Workout> filteredExercises = [];
   String searchQuery = '';
 
   @override
@@ -84,15 +38,14 @@ class _TrainingsPageState extends State<TrainingsPage> {
     setState(() {
       searchQuery = query.toLowerCase();
       filteredExercises = allExercises.where((item) {
-        final name = item['name']?.toLowerCase() ?? '';
-        final coach = item['coach']?.toLowerCase() ?? '';
-        return name.contains(searchQuery) || coach.contains(searchQuery);
+        return item.name.toLowerCase().contains(searchQuery) ||
+            item.coach.toLowerCase().contains(searchQuery);
       }).toList();
     });
   }
 
-  Widget _buildTrainingTile(Map<String, String> item) {
-    final iconData = iconMap[item['icon']] ?? Icons.fitness_center;
+  Widget _buildTrainingTile(Workout item) {
+    final iconData = iconMap[item.icon] ?? Icons.fitness_center;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
@@ -104,24 +57,13 @@ class _TrainingsPageState extends State<TrainingsPage> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           leading: CircleAvatar(
             backgroundColor: ColorScheme.of(context).primaryContainer,
-            child: Icon(
-              iconData,
-              color: ColorScheme.of(context).onPrimaryContainer,
-            ),
+            child: Icon(iconData, color: ColorScheme.of(context).onPrimaryContainer),
           ),
-          title: Text(
-            item['name'] ?? '',
-            style: TextTheme.of(context).bodyLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          subtitle: Text(
-            item['coach'] ?? '',
-            style: TextTheme.of(context).bodySmall,
-          ),
+          title: Text(item.name, style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
+          subtitle: Text(item.coach, style: TextTheme.of(context).bodySmall),
           trailing: const Icon(Icons.arrow_forward_ios, size: 16),
           onTap: () {
-            // TODO: Navigate to training details
+            context.push('/training/${item.id}', extra: item);
           },
         ),
       ),
@@ -170,16 +112,9 @@ class _TrainingsPageState extends State<TrainingsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.fitness_center,
-              size: 60,
-              color: ColorScheme.of(context).primary,
-            ),
+            Icon(Icons.fitness_center, size: 60, color: ColorScheme.of(context).primary),
             const SizedBox(height: 16),
-            Text(
-              'Your Trainings',
-              style: TextTheme.of(context).titleLarge,
-            ),
+            Text('Your Trainings', style: TextTheme.of(context).titleLarge),
             const SizedBox(height: 8),
             Text(
               'Here will be your workout plans',
