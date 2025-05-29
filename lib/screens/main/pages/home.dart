@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Training {
@@ -57,26 +58,33 @@ class _HomePageState extends State<HomePage> {
         children: [
 
           // Membership
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: ColorScheme.of(context).secondary,
+          Material(
+            color: ColorScheme.of(context).secondary,
+            borderRadius: BorderRadius.circular(12),
+            child: InkWell(
+              splashColor: Colors.transparent,
               borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Membership active\nuntil $activeData',
-                  style: TextTheme.of(context).bodyLarge?.copyWith(
+              onTap: () {
+                context.push('/profile/abonnement');
+              },
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Membership active\nuntil $activeData',
+                      style: TextTheme.of(context).bodyLarge?.copyWith(
+                        color: ColorScheme.of(context).onSecondary,
+                      ),
+                    ),
+                    Icon(
+                      Icons.chevron_right,
                       color: ColorScheme.of(context).onSecondary,
-                  )
+                    ),
+                  ],
                 ),
-                Icon(
-                  Icons.chevron_right,
-                  color: ColorScheme.of(context).onSecondary
-                ),
-              ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
