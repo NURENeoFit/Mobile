@@ -56,22 +56,25 @@ class DetailsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F5FA),
-      appBar: AppBar(title: const Text('My details')),
+      appBar: AppBar(title: Text('My details', style: TextTheme.of(context).headlineLarge)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           _buildCardSection(
+            context: context,
             title: 'Account',
             entries: accountDetails,
             tapActions: accountActions,
           ),
           const SizedBox(height: 24),
           _buildCardSection(
+            context: context,
             title: 'Profile',
             entries: profileDetails,
           ),
           const SizedBox(height: 24),
           _buildCardSection(
+            context: context,
             title: 'Recommendations',
             entries: recommendations,
           ),
@@ -81,6 +84,7 @@ class DetailsPage extends StatelessWidget {
   }
 
   Widget _buildCardSection({
+    required BuildContext context,
     required Map<String, String?> entries,
     String? title,
     Map<String, VoidCallback>? tapActions,
@@ -91,17 +95,16 @@ class DetailsPage extends StatelessWidget {
         if (title != null) ...[
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextTheme.of(context).bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: ColorScheme.of(context).onSurface,
             ),
           ),
           const SizedBox(height: 8),
         ],
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ColorScheme.of(context).surface,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -112,12 +115,14 @@ class DetailsPage extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
-                    title: Text(entry.key, style: const TextStyle(color: Colors.black)),
+                    title: Text(entry.key, style: TextTheme.of(context).bodyMedium?.copyWith(
+                      color: ColorScheme.of(context).onSurface,
+                    )),
                     trailing: entry.value != null
                         ? Text(
                       entry.value!,
-                      style: const TextStyle(
-                        color: Colors.deepPurple,
+                      style: TextTheme.of(context).bodyMedium?.copyWith(
+                        color: ColorScheme.of(context).primary,
                         fontWeight: FontWeight.w600,
                       ),
                     )
