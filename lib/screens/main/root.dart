@@ -41,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
       setState(() {
         _screens = [
           _ScreenConfig(
-            appBar: AppBar(title: const Text('NeoFit')),
+            appBar: AppBar(title: Text('NeoFit', style: TextTheme.of(context).headlineLarge)),
             body: HomePage(),
             fab: null,
             showBottomNav: true,
@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
             showBottomNav: true,
           ),
           _ScreenConfig(
-            appBar: AppBar(title: const Text('Profile')),
+            appBar: AppBar(title: Text('Profile', style: TextTheme.of(context).headlineLarge)),
             body: ProfilePage(),
             fab: null,
             showBottomNav: true,

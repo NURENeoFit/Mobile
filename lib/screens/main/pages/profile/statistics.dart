@@ -6,15 +6,16 @@ class StatisticsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistics')),
+      appBar: AppBar(title: Text('Statistics', style: TextTheme.of(context).headlineLarge)),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Icon(Icons.bar_chart, size: 64, color: Colors.deepPurple),
             SizedBox(height: 16),
             Text('Your progress and statistics will be displayed here.',
-                style: TextStyle(color: Colors.grey)),
+                style: TextTheme.of(context).bodyMedium?.copyWith(color: Colors.grey)
+            ),
           ],
         ),
       ),
