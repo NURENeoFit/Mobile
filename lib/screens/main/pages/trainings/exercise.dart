@@ -13,7 +13,7 @@ class TrainingDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(workout.name),
+        title: Text(workout.name, style: TextTheme.of(context).headlineMedium,),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -22,14 +22,14 @@ class TrainingDetailPage extends StatelessWidget {
           children: [
             Icon(iconData, size: 80, color: ColorScheme.of(context).primary),
             const SizedBox(height: 24),
-            Text(workout.name, style: TextTheme.of(context).titleLarge),
+            Text(workout.name, style: TextTheme.of(context).titleMedium),
             const SizedBox(height: 8),
-            Text(workout.coach, style: TextTheme.of(context).bodyMedium),
+            Text(workout.coach, style: TextTheme.of(context).bodyLarge),
             const SizedBox(height: 24),
             Text(
               'This is a detailed view of the workout "${workout.name}". '
                   'Here will be displayed duration, sets, reps, instructions or video.',
-              style: TextTheme.of(context).bodySmall,
+              style: TextTheme.of(context).bodyMedium,
             ),
           ],
         ),

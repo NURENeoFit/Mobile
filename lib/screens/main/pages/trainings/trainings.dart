@@ -54,6 +54,7 @@ class _TrainingsPageState extends State<TrainingsPage> {
         elevation: 2,
         color: ColorScheme.of(context).surface,
         child: ListTile(
+          splashColor: Colors.transparent,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           leading: CircleAvatar(
             backgroundColor: ColorScheme.of(context).primaryContainer,
