@@ -112,7 +112,7 @@ class _TrainingsPageState extends State<TrainingsPage> {
           title: Text(
             item['name'] ?? '',
             style: TextTheme.of(context).bodyLarge?.copyWith(
-              fontWeight: FontWeight.w500
+              fontWeight: FontWeight.w500,
             ),
           ),
           subtitle: Text(
@@ -130,10 +130,12 @@ class _TrainingsPageState extends State<TrainingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final hasTrainings = allExercises.isNotEmpty;
+
     return SafeArea(
-      child: Column(
+      child: hasTrainings
+          ? Column(
         children: [
-          // Search Bar
           Padding(
             padding: const EdgeInsets.all(12),
             child: TextField(
@@ -147,10 +149,15 @@ class _TrainingsPageState extends State<TrainingsPage> {
               ),
             ),
           ),
-
-          // Filtered List
           Expanded(
-            child: ListView.builder(
+            child: filteredExercises.isEmpty
+                ? Center(
+              child: Text(
+                'No results found',
+                style: TextTheme.of(context).bodyLarge,
+              ),
+            )
+                : ListView.builder(
               itemCount: filteredExercises.length,
               itemBuilder: (context, index) {
                 return _buildTrainingTile(filteredExercises[index]);
@@ -158,12 +165,33 @@ class _TrainingsPageState extends State<TrainingsPage> {
             ),
           ),
         ],
+      )
+          : Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.fitness_center,
+              size: 60,
+              color: ColorScheme.of(context).primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Your Trainings',
+              style: TextTheme.of(context).titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Here will be your workout plans',
+              style: TextTheme.of(context).bodyMedium?.copyWith(color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-// Mapping icon names to Flutter icons
 const Map<String, IconData> iconMap = {
   'fitness_center': Icons.fitness_center,
   'directions_run': Icons.directions_run,
