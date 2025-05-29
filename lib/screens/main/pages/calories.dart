@@ -43,46 +43,35 @@ class _CaloriesPageState extends State<CaloriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: const Text('Calculate Calories'),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _buildMealCard(context, 'Breakfast', _breakfastController, _breakfastTotal, (val) {
-                setState(() => _breakfastTotal += val);
-              }),
-              _buildMealCard(context, 'Lunch', _lunchController, _lunchTotal, (val) {
-                setState(() => _lunchTotal += val);
-              }),
-              _buildMealCard(context, 'Dinner', _dinnerController, _dinnerTotal, (val) {
-                setState(() => _dinnerTotal += val);
-              }),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                decoration: BoxDecoration(
-                  color: ColorScheme.of(context).primary.withValues(alpha: 0.1),
-                  borderRadius: containerBorderRadius12,
-                ),
-                child: Text(
-                  'Total calories: $_totalCalories',
-                  style: const TextStyle(
-                    fontSize: fontSizeHeader18,
-                    fontWeight: FontWeight.bold
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildMealCard(context, 'Breakfast', _breakfastController, _breakfastTotal, (val) {
+              setState(() => _breakfastTotal += val);
+            }),
+            _buildMealCard(context, 'Lunch', _lunchController, _lunchTotal, (val) {
+              setState(() => _lunchTotal += val);
+            }),
+            _buildMealCard(context, 'Dinner', _dinnerController, _dinnerTotal, (val) {
+              setState(() => _dinnerTotal += val);
+            }),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              decoration: BoxDecoration(
+                color: ColorScheme.of(context).primary.withValues(alpha: 0.1),
+                borderRadius: containerBorderRadius12,
               ),
-            ],
-          ),
+              child: Text(
+                'Total calories: $_totalCalories',
+                style: TextTheme.of(context).titleLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -102,10 +91,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: TextStyle(
-                fontSize: fontSizeHeader18,
-                fontWeight: FontWeight.w600,
+          Text(title, style: TextTheme.of(context).titleLarge?.copyWith(
                 color: ColorScheme.of(context).primary
               )
           ),
@@ -134,7 +120,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
                     foregroundColor: ColorScheme.of(context).onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text('Add'),
+                  child: Text('Add'),
                 ),
               ),
             ],
@@ -144,8 +130,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
             alignment: Alignment.centerRight,
             child: Text(
                 'Total: $total',
-                style: const TextStyle(
-                  fontSize: fontSizeGeneralText16,
+                style: TextTheme.of(context).bodyLarge?.copyWith(
                   fontWeight: FontWeight.w500
                 )
             ),

@@ -32,32 +32,45 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   // Each screen defines its own UI configuration
-  final List<_ScreenConfig> _screens = [
-    _ScreenConfig(
-      appBar: AppBar(title: const Text('NeoFit')),
-      body: HomePage(),
-      fab: null,
-      showBottomNav: true,
-    ),
-    _ScreenConfig(
-      appBar: null, // no AppBar
-      body: CaloriesPage(),
-      fab: null,
-      showBottomNav: true,
-    ),
-    _ScreenConfig(
-      appBar: null,
-      body: TrainingsPage(),
-      fab: null,
-      showBottomNav: true,
-    ),
-    _ScreenConfig(
-      appBar: AppBar(title: const Text('Profile')),
-      body: ProfilePage(),
-      fab: null,
-      showBottomNav: true,
-    ),
-  ];
+  late final List<_ScreenConfig> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _screens = [
+          _ScreenConfig(
+            appBar: AppBar(title: const Text('NeoFit')),
+            body: HomePage(),
+            fab: null,
+            showBottomNav: true,
+          ),
+          _ScreenConfig(
+            appBar: AppBar(
+              title: Text('Calculate Calories', style: TextTheme.of(context).headlineLarge),
+              centerTitle: true,
+            ), // no AppBar
+            body: CaloriesPage(),
+            fab: null,
+            showBottomNav: true,
+          ),
+          _ScreenConfig(
+            appBar: null,
+            body: TrainingsPage(),
+            fab: null,
+            showBottomNav: true,
+          ),
+          _ScreenConfig(
+            appBar: AppBar(title: const Text('Profile')),
+            body: ProfilePage(),
+            fab: null,
+            showBottomNav: true,
+          ),
+        ];
+      });
+    });
+  }
 
   void _onTap(int index) {
     setState(() {
