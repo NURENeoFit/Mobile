@@ -72,13 +72,14 @@ class _ProfilePageState extends State<ProfilePage> {
         leading: Icon(icon, color: Colors.deepPurple, size: 24),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextTheme.of(context).bodyLarge?.copyWith(
             fontWeight: FontWeight.w500,
-            fontSize: 16,
           ),
         ),
         subtitle: subtitle != null
-            ? Text(subtitle, style: const TextStyle(color: Colors.grey))
+            ? Text(subtitle, style: TextTheme.of(context).bodyMedium?.copyWith(
+                  color: Colors.grey)
+            )
             : null,
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
         onTap: onTap,
@@ -99,9 +100,8 @@ class _ProfilePageState extends State<ProfilePage> {
         leading: Icon(icon, color: Colors.deepPurple, size: 24),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextTheme.of(context).bodyLarge?.copyWith(
             fontWeight: FontWeight.w500,
-            fontSize: 16,
           ),
         ),
         trailing: Switch(
