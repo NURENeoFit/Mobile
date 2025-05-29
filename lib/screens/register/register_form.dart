@@ -48,7 +48,7 @@ class _RegisterFormState extends State<RegisterForm> {
       child: Column(
         children: [
           const SizedBox(height: 40),
-          const Icon(Icons.person_add, size: 64, color: Colors.deepPurple),
+          Icon(Icons.person_add, size: 64, color: ColorScheme.of(context).primary),
           const SizedBox(height: 24),
 
           // Username
@@ -125,11 +125,10 @@ class _RegisterFormState extends State<RegisterForm> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _onRegisterPressed,
-              child: const Text('Sign Up'),
+              child: Text('Sign Up', style: TextTheme.of(context).labelLarge),
             ),
           ),
           const SizedBox(height: 16),
-
           const CustomDivider(),
           const SizedBox(height: 16),
 

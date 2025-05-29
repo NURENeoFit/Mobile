@@ -7,7 +7,8 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(title: Text('Register', style: TextTheme.of(context).headlineMedium)),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: RegisterForm(),

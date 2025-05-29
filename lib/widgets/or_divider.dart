@@ -6,11 +6,11 @@ class CustomDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
+      children: [
         Expanded(child: Divider()),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Text('OR'),
+          child: Text('OR', style: TextTheme.of(context).bodySmall),
         ),
         Expanded(child: Divider()),
       ],

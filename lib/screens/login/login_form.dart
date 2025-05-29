@@ -44,7 +44,7 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 60),
-          const Icon(Icons.lock, size: 64, color: Colors.deepPurple),
+          Icon(Icons.lock, size: 64, color: ColorScheme.of(context).primary),
           const SizedBox(height: 24),
 
           TextFormField(
@@ -84,11 +84,10 @@ class _LoginFormState extends State<LoginForm> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _onLoginPressed,
-              child: const Text('Login'),
+              child: Text('Login', style: TextTheme.of(context).labelLarge),
             ),
           ),
           const SizedBox(height: 16),
-
           const CustomDivider(),
           const SizedBox(height: 16),
 
