@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:neofit_mobile/design/dimensions.dart';
-
 class CaloriesPage extends StatefulWidget {
   const CaloriesPage({super.key});
 
@@ -63,7 +61,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
               padding: const EdgeInsets.symmetric(vertical: 20),
               decoration: BoxDecoration(
                 color: ColorScheme.of(context).primary.withValues(alpha: 0.1),
-                borderRadius: containerBorderRadius12,
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 'Total calories: $_totalCalories',
@@ -83,7 +81,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: ColorScheme.of(context).surface,
-        borderRadius: containerBorderRadius12,
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(color: ColorScheme.of(context).shadow, blurRadius: 4, offset: Offset(0, 2))
         ],
@@ -105,7 +103,7 @@ class _CaloriesPageState extends State<CaloriesPage> {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: 'Calories',
-                    border: OutlineInputBorder(borderRadius: containerBorderRadius12),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                     isDense: true,
                   ),
                 ),

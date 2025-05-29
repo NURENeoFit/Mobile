@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'package:neofit_mobile/design/dimensions.dart';
-
 class Training {
   final TimeOfDay time;
   final String coach;
@@ -63,7 +61,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: ColorScheme.of(context).secondary,
-              borderRadius: containerBorderRadius12,
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,7 +86,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: ColorScheme.of(context).surface,
-              borderRadius: containerBorderRadius12,
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +123,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: ColorScheme.of(context).surface,
-              borderRadius: containerBorderRadius12,
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: ColorScheme.of(context).surfaceContainer,
-                      borderRadius: containerBorderRadius12,
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       children: [
