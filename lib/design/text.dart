@@ -11,7 +11,7 @@ final TextTheme customTextTheme = const TextTheme(
   // Section/Card/Block Title
   titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
   titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w600), // Basic Title
-  titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600), // Basic Title
+  titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
 
   // Main text (paragraphs, signatures, details)
   bodyLarge: TextStyle(fontSize: 16), // Basic Text
