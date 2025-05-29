@@ -63,16 +63,15 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: ColorScheme.of(context).secondary,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: containerBorderRadius12,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Membership active\nuntil $activeData',
-                  style: TextStyle(
-                    color: ColorScheme.of(context).onSecondary,
-                    fontSize: fontSizeGeneralText16
+                  style: TextTheme.of(context).bodyLarge?.copyWith(
+                      color: ColorScheme.of(context).onSecondary,
                   )
                 ),
                 Icon(
@@ -94,17 +93,14 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   '🎯 Goal',
-                  style: TextStyle(fontSize: fontSizeGeneralText16)
+                  style: TextTheme.of(context).bodyLarge
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'Weight loss',
-                  style: TextStyle(
-                    fontSize: fontSizeHeader18,
-                    fontWeight: FontWeight.bold
-                  )
+                  style: TextTheme.of(context).titleLarge
                 ),
                 const SizedBox(height: 12),
                 LinearProgressIndicator(
@@ -115,7 +111,9 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 8),
                 Text(
                   '5 kg left',
-                  style: TextStyle(color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4))
+                  style: TextTheme.of(context).bodyMedium?.copyWith(
+                      color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4)
+                  )
                 ),
               ],
             ),
@@ -132,12 +130,9 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Your Schedule',
-                  style: TextStyle(
-                    fontSize: fontSizeHeader18,
-                    fontWeight: FontWeight.bold
-                  )
+                  style: TextTheme.of(context).titleLarge
                 ),
                 const SizedBox(height: 12),
                 TableCalendar(
@@ -173,8 +168,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 16),
                 Text(
                   'Plans for ${selected.toLocal().toString().split(' ')[0]}',
-                  style: const TextStyle(
-                    fontSize: fontSizeGeneralText16,
+                  style: TextTheme.of(context).bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold
                   ),
                 ),
@@ -200,11 +194,16 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Text(
                                 '${training.type} with ${training.coach}',
-                                style: const TextStyle(fontWeight: FontWeight.w500)),
+                                style: TextTheme.of(context).bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500
+                                )
+                              ),
                               const SizedBox(height: 4),
                               Text(
                                 '${training.time.format(context)} • ${training.isGroup ? 'Group' : 'Individual'}',
-                                style: TextStyle(color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4)),
+                                style: TextTheme.of(context).bodyMedium?.copyWith(
+                                    color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4)
+                                ),
                               ),
                             ],
                           ),
