@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 4),
                 Text(
                   'Weight loss',
-                  style: TextTheme.of(context).titleLarge
+                  style: TextTheme.of(context).titleMedium
                 ),
                 const SizedBox(height: 12),
                 LinearProgressIndicator(
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text(
                   'Your Schedule',
-                  style: TextTheme.of(context).titleLarge
+                  style: TextTheme.of(context).titleMedium
                 ),
                 const SizedBox(height: 12),
                 TableCalendar(
@@ -213,7 +213,7 @@ class _HomePageState extends State<HomePage> {
                 if (_getPlansForDay(selected).isEmpty)
                   Text(
                     'No plans for this date.',
-                    style: TextStyle(color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4))
+                    style: TextTheme.of(context).bodyMedium?.copyWith(color: ColorScheme.of(context).onSurface.withValues(alpha: 0.4))
                   ),
               ],
             ),

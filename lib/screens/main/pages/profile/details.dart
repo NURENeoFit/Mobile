@@ -56,7 +56,7 @@ class DetailsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F5FA),
-      appBar: AppBar(title: Text('My details', style: TextTheme.of(context).headlineLarge)),
+      appBar: AppBar(title: Text('My details', style: TextTheme.of(context).headlineMedium)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -95,8 +95,7 @@ class DetailsPage extends StatelessWidget {
         if (title != null) ...[
           Text(
             title,
-            style: TextTheme.of(context).bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
+            style: TextTheme.of(context).titleMedium?.copyWith(
               color: ColorScheme.of(context).onSurface,
             ),
           ),

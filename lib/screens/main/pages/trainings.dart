@@ -111,7 +111,9 @@ class _TrainingsPageState extends State<TrainingsPage> {
           ),
           title: Text(
             item['name'] ?? '',
-            style: TextTheme.of(context).titleMedium,
+            style: TextTheme.of(context).bodyLarge?.copyWith(
+              fontWeight: FontWeight.w500
+            ),
           ),
           subtitle: Text(
             item['coach'] ?? '',

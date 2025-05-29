@@ -6,7 +6,7 @@ class FavouritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Favourites', style: TextTheme.of(context).headlineLarge)),
+      appBar: AppBar(title: Text('Favourites', style: TextTheme.of(context).headlineMedium)),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

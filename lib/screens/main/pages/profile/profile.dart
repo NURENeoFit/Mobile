@@ -17,6 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: const EdgeInsets.all(12),
       children: [
         _buildTile(
+          context,
           Icons.person,
           'My details',
           onTap: () {
@@ -24,31 +25,36 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
         _buildTile(
+          context,
           Icons.card_membership,
           'Abonnement',
           onTap: () {
             context.push('/profile/abonnement');
           }),
         _buildTile(
+          context,
           Icons.star,
           'Favourites',
           onTap: () {
             context.push('/profile/favourites');
           }),
         _buildTile(
+          context,
           Icons.stacked_bar_chart,
           'Statistics',
           onTap: () {
             context.push('/profile/statistics');
           }),
         _buildSwitchTile(
+          context,
           Icons.notifications,
           'Notifications',
           notifications,
               (val) => setState(() => notifications = val),
         ),
-        _buildTile(Icons.settings, 'Settings', onTap: () {}),
+        _buildTile(context, Icons.settings, 'Settings', onTap: () {}),
         _buildTile(
+          context,
           Icons.logout,
           'Logout',
           onTap: () {
@@ -60,26 +66,24 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // Builds a ListTile wrapped in a Card
-  Widget _buildTile(IconData icon, String title,
+  Widget _buildTile(BuildContext context, IconData icon, String title,
       {String? subtitle, VoidCallback? onTap}) {
     return Card(
       elevation: 1.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 6),
-      color: Colors.white,
+      color: ColorScheme.of(context).surface,
       child: ListTile(
         splashColor: Colors.transparent,
-        leading: Icon(icon, color: Colors.deepPurple, size: 24),
+        leading: Icon(icon, color: ColorScheme.of(context).primary, size: 24),
         title: Text(
           title,
-          style: TextTheme.of(context).bodyLarge?.copyWith(
+          style: TextTheme.of(context).labelLarge?.copyWith(
             fontWeight: FontWeight.w500,
           ),
         ),
         subtitle: subtitle != null
-            ? Text(subtitle, style: TextTheme.of(context).bodyMedium?.copyWith(
-                  color: Colors.grey)
-            )
+            ? Text(subtitle, style: TextTheme.of(context).bodySmall)
             : null,
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
         onTap: onTap,
@@ -89,18 +93,18 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Builds a ListTile with a switch
   Widget _buildSwitchTile(
-      IconData icon, String title, bool value, ValueChanged<bool> onChanged) {
+      BuildContext context, IconData icon, String title, bool value, ValueChanged<bool> onChanged) {
     return Card(
       elevation: 1.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 6),
-      color: Colors.white,
+      color: ColorScheme.of(context).surface,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        leading: Icon(icon, color: Colors.deepPurple, size: 24),
+        leading: Icon(icon, color: ColorScheme.of(context).primary, size: 24),
         title: Text(
           title,
-          style: TextTheme.of(context).bodyLarge?.copyWith(
+          style: TextTheme.of(context).labelLarge?.copyWith(
             fontWeight: FontWeight.w500,
           ),
         ),

@@ -41,14 +41,14 @@ class _MainScreenState extends State<MainScreen> {
       setState(() {
         _screens = [
           _ScreenConfig(
-            appBar: AppBar(title: Text('NeoFit', style: TextTheme.of(context).headlineLarge)),
+            appBar: AppBar(title: Text('NeoFit', style: TextTheme.of(context).headlineMedium)),
             body: HomePage(),
             fab: null,
             showBottomNav: true,
           ),
           _ScreenConfig(
             appBar: AppBar(
-              title: Text('Calculate Calories', style: TextTheme.of(context).headlineLarge),
+              title: Text('Calculate Calories', style: TextTheme.of(context).headlineMedium),
               centerTitle: true,
             ), // no AppBar
             body: CaloriesPage(),
@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
             showBottomNav: true,
           ),
           _ScreenConfig(
-            appBar: AppBar(title: Text('Profile', style: TextTheme.of(context).headlineLarge)),
+            appBar: AppBar(title: Text('Profile', style: TextTheme.of(context).headlineMedium)),
             body: ProfilePage(),
             fab: null,
             showBottomNav: true,
