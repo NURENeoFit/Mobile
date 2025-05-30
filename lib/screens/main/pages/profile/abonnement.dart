@@ -24,6 +24,12 @@ class AbonnementPage extends StatelessWidget {
     // Convert membership data to JSON for QR code
     final String qrData = jsonEncode(activeMembership);
 
+    // Check if membership is active
+    final isActive = _checkMembershipActive(
+      activeMembership?['start_date'],
+      activeMembership?['end_date'],
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Abonnement', style: textTheme.headlineMedium),
@@ -43,7 +49,7 @@ class AbonnementPage extends StatelessWidget {
         ),
       )
           : SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -63,7 +69,18 @@ class AbonnementPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // Membership details section
+            // Membership status
+            Text('Status: ', style: textTheme.titleMedium),
+            Text(
+              isActive ? 'Active' : 'Inactive',
+              style: textTheme.titleMedium?.copyWith(
+                color: isActive ? Colors.green : Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Membership details
             Text('Membership Name:', style: textTheme.titleMedium),
             Text(activeMembership['membership_name'], style: textTheme.bodyLarge),
             const SizedBox(height: 12),
@@ -85,5 +102,17 @@ class AbonnementPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _checkMembershipActive(String? start, String? end) {
+    if (start == null || end == null) return false;
+    try {
+      final now = DateTime.now();
+      final startDate = DateTime.parse(start);
+      final endDate = DateTime.parse(end);
+      return now.isAfter(startDate) && now.isBefore(endDate.add(const Duration(days: 1)));
+    } catch (_) {
+      return false;
+    }
   }
 }
