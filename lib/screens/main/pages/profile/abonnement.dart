@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:convert';
 
 class AbonnementPage extends StatelessWidget {
   const AbonnementPage({super.key});
@@ -13,13 +13,16 @@ class AbonnementPage extends StatelessWidget {
 
     // Simulated active membership data
     final Map<String, dynamic>? activeMembership = {
+      'user_id': '123456',
       'membership_name': 'Premium Membership',
       'membership_description': 'Access to gym and unlimited group classes',
       'membership_price': '129',
       'start_date': '2025-05-01',
       'end_date': '2025-06-30',
-      'qr_data': const Uuid().v4(),
     };
+
+    // Convert membership data to JSON for QR code
+    final String qrData = jsonEncode(activeMembership);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,25 +47,23 @@ class AbonnementPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // QR code at the top
+            // QR code section
             Center(
               child: Column(
                 children: [
                   Text('Your QR Code', style: textTheme.titleLarge),
                   const SizedBox(height: 10),
                   QrImageView(
-                    data: activeMembership['qr_data'],
+                    data: qrData,
                     version: QrVersions.auto,
                     size: 200,
                   ),
-                  const SizedBox(height: 8),
-                  Text('QR: ${activeMembership['qr_data']}', style: textTheme.bodySmall),
                 ],
               ),
             ),
             const SizedBox(height: 24),
 
-            // Membership details
+            // Membership details section
             Text('Membership Name:', style: textTheme.titleMedium),
             Text(activeMembership['membership_name'], style: textTheme.bodyLarge),
             const SizedBox(height: 12),
