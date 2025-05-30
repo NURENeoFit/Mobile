@@ -56,7 +56,7 @@ class _TrainingDetailPageState extends State<TrainingDetailPage> {
         title: Text(widget.workout.name, style: TextTheme.of(context).headlineMedium),
         actions: [
           IconButton(
-            icon: Icon(isFavorite ? Icons.star : Icons.star_border),
+            icon: isFavorite ? Icon(Icons.star, color: Colors.amber) : Icon(Icons.star_border),
             onPressed: _toggleFavorite,
           ),
         ],
