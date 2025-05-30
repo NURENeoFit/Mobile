@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:neofit_mobile/models/workout.dart';
 import 'package:neofit_mobile/screens/main/pages/trainings/trainings.dart';
 
@@ -78,7 +79,10 @@ class _FavouritesPageState extends State<FavouritesPage> {
           title: Text(item.name, style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
           subtitle: Text(item.coach, style: TextTheme.of(context).bodySmall),
           trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-          onTap: () => context.push('/training/${item.id}', extra: item),
+          onTap: () async {
+            await context.push('/training/${item.id}', extra: item);
+            _loadFavourites(); // We will update the favorites after returning
+          },
         ),
       ),
     );
@@ -89,7 +93,9 @@ class _FavouritesPageState extends State<FavouritesPage> {
     final hasFavourites = favouriteWorkouts.isNotEmpty;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Favourites', style: TextTheme.of(context).headlineMedium)),
+      appBar: AppBar(
+        title: Text('Favourites', style: TextTheme.of(context).headlineMedium),
+      ),
       body: hasFavourites
           ? Column(
         children: [
