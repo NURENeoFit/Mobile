@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -10,13 +11,34 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool notifications = true;
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationSetting();
+  }
+
+  Future<void> _loadNotificationSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedValue = prefs.getBool('notifications_enabled') ?? true;
+    setState(() {
+      notifications = savedValue;
+      _loaded = true;
+    });
+  }
+
+  Future<void> _saveNotificationSetting(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notifications_enabled', value);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Settings', style: TextTheme.of(context).headlineMedium),
+        title: Text('Settings', style: Theme.of(context).textTheme.headlineMedium),
       ),
       body: ListView(
         padding: const EdgeInsets.all(12),
@@ -25,16 +47,19 @@ class _SettingsPageState extends State<SettingsPage> {
             context,
             Icons.person,
             'Edit Profile',
-            // onTap: () => context.push('/profile/details'),
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Edit Profile tapped')),
+              );
+            },
           ),
           _buildTile(
             context,
             Icons.flag,
             'Edit Goal',
             onTap: () {
-              // TODO: push to edit goals screen
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit Goals tapped')),
+                const SnackBar(content: Text('Edit Goal tapped')),
               );
             },
           ),
@@ -43,7 +68,6 @@ class _SettingsPageState extends State<SettingsPage> {
             Icons.lock,
             'Change Password',
             onTap: () {
-              // TODO: push to password change screen
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Change Password tapped')),
               );
@@ -54,7 +78,10 @@ class _SettingsPageState extends State<SettingsPage> {
             Icons.notifications,
             'Notifications',
             notifications,
-                (val) => setState(() => notifications = val),
+            (val) {
+              setState(() => notifications = val);
+              _saveNotificationSetting(val);
+            },
           ),
         ],
       ),
@@ -67,18 +94,18 @@ class _SettingsPageState extends State<SettingsPage> {
       elevation: 1.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 6),
-      color: ColorScheme.of(context).surface,
+      color: Theme.of(context).colorScheme.surface,
       child: ListTile(
         splashColor: Colors.transparent,
-        leading: Icon(icon, color: ColorScheme.of(context).primary),
+        leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
         title: Text(
           title,
-          style: TextTheme.of(context).labelLarge?.copyWith(
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w500,
           ),
         ),
         subtitle: subtitle != null
-            ? Text(subtitle, style: TextTheme.of(context).bodySmall)
+            ? Text(subtitle, style: Theme.of(context).textTheme.bodySmall)
             : null,
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
         onTap: onTap,
@@ -86,20 +113,35 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  // Builds a ListTile with a switch
   Widget _buildSwitchTile(BuildContext context, IconData icon, String title,
       bool value, ValueChanged<bool> onChanged) {
     return Card(
       elevation: 1.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 6),
-      color: ColorScheme.of(context).surface,
-      child: ListTile(
+      color: Theme.of(context).colorScheme.surface,
+      child: !_loaded
+          ? ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        leading: Icon(icon, color: ColorScheme.of(context).primary, size: 24),
+        leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
         title: Text(
           title,
-          style: TextTheme.of(context).labelLarge?.copyWith(
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w500,
+          )
+        ),
+        trailing: const SizedBox(
+          height: 16,
+          width: 16,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      )
+          : ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w500,
           ),
         ),
