@@ -38,6 +38,7 @@ dependencies:
   # My dependencies
   go_router: ^13.0.0
   table_calendar: ^3.0.9
+  fl_chart: ^1.0.0
   dio: ^5.3.2
   shared_preferences: ^2.2.2
 
