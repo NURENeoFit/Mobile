@@ -33,14 +33,6 @@ class DetailsPage extends StatelessWidget {
       'Email': email,
       'Phone': phone,
       'Date of birth': dateOfBirth,
-      'Change password': null, // functional item
-    };
-
-    final Map<String, VoidCallback> accountActions = {
-      'Change password': () {
-        // TODO: implement password change logic
-        debugPrint('Change password tapped');
-      },
     };
 
     // Profile info section
@@ -64,7 +56,6 @@ class DetailsPage extends StatelessWidget {
             context: context,
             title: 'Account',
             entries: accountDetails,
-            tapActions: accountActions,
           ),
           const SizedBox(height: 24),
           _buildCardSection(
@@ -87,7 +78,6 @@ class DetailsPage extends StatelessWidget {
     required BuildContext context,
     required Map<String, String?> entries,
     String? title,
-    Map<String, VoidCallback>? tapActions,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +99,6 @@ class DetailsPage extends StatelessWidget {
           child: Column(
             children: List.generate(entries.length, (index) {
               final entry = entries.entries.elementAt(index);
-              final onTap = tapActions?[entry.key];
 
               return Column(
                 children: [
@@ -126,7 +115,6 @@ class DetailsPage extends StatelessWidget {
                       ),
                     )
                         : const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-                    onTap: onTap,
                   ),
                   if (index < entries.length - 1)
                     const Divider(height: 1, color: Color(0xFFE0E0E0)),
