@@ -50,9 +50,16 @@ class _ProfilePageState extends State<ProfilePage> {
           Icons.notifications,
           'Notifications',
           notifications,
-              (val) => setState(() => notifications = val),
+          (val) => setState(() => notifications = val),
         ),
-        _buildTile(context, Icons.settings, 'Settings', onTap: () {}),
+        _buildTile(
+          context, 
+          Icons.settings, 
+          'Settings', 
+          onTap: () {
+            context.push('/profile/settings');
+          }
+        ),
         _buildTile(
           context,
           Icons.logout,

@@ -47,7 +47,7 @@ class DetailsPage extends StatelessWidget {
     };
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F5FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(title: Text('My details', style: TextTheme.of(context).headlineMedium)),
       body: ListView(
         padding: const EdgeInsets.all(16),

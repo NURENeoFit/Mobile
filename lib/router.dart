@@ -5,6 +5,7 @@ import 'package:neofit_mobile/screens/login/login_screen.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/profile.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/details.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/favourites.dart';
+import 'package:neofit_mobile/screens/main/pages/profile/settings.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/statistics.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/abonnement.dart';
 import 'package:neofit_mobile/screens/main/pages/trainings/exercise.dart';
@@ -42,16 +43,20 @@ final GoRouter appRouter = GoRouter(
           builder: (context, state) => const DetailsPage(),
         ),
         GoRoute(
-          path: 'statistics',
-          builder: (context, state) => const StatisticsPage(),
+          path: 'abonnement',
+          builder: (context, state) => const AbonnementPage(),
         ),
         GoRoute(
           path: 'favourites',
           builder: (context, state) => const FavouritesPage(),
         ),
         GoRoute(
-          path: 'abonnement',
-          builder: (context, state) => const AbonnementPage(),
+          path: 'statistics',
+          builder: (context, state) => const StatisticsPage(),
+        ),
+        GoRoute(
+          path: 'settings',
+          builder: (context, state) => const SettingsPage(),
         ),
       ],
     ),
