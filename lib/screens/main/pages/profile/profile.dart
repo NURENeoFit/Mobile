@@ -9,7 +9,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool notifications = true;
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +44,6 @@ class _ProfilePageState extends State<ProfilePage> {
           onTap: () {
             context.push('/profile/statistics');
           }),
-        _buildSwitchTile(
-          context,
-          Icons.notifications,
-          'Notifications',
-          notifications,
-          (val) => setState(() => notifications = val),
-        ),
         _buildTile(
           context, 
           Icons.settings, 
@@ -94,32 +86,6 @@ class _ProfilePageState extends State<ProfilePage> {
             : null,
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
         onTap: onTap,
-      ),
-    );
-  }
-
-  // Builds a ListTile with a switch
-  Widget _buildSwitchTile(
-      BuildContext context, IconData icon, String title, bool value, ValueChanged<bool> onChanged) {
-    return Card(
-      elevation: 1.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      color: ColorScheme.of(context).surface,
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        leading: Icon(icon, color: ColorScheme.of(context).primary, size: 24),
-        title: Text(
-          title,
-          style: TextTheme.of(context).labelLarge?.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        trailing: Switch(
-          value: value,
-          onChanged: onChanged,
-          activeColor: Colors.green,
-        ),
       ),
     );
   }
