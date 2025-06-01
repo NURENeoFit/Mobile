@@ -25,10 +25,19 @@ class _StatisticsPageState extends State<StatisticsPage> {
   final double currentCalories = 1200;
   final double dailyTargetCalories = 1800;
 
+  final List<Map<String, dynamic>> history = const [
+    {'date': '2024-06-01', 'weight': 50.0, 'calories': 2450},
+    {'date': '2024-06-09', 'weight': 49.6, 'calories': 2300},
+    {'date': '2024-06-24', 'weight': 48.8, 'calories': 2200},
+    {'date': '2024-07-14', 'weight': 48.0, 'calories': 2150},
+  ];
+
+  bool _historyExpanded = false;
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = ColorScheme.of(context);
-    final textTheme = TextTheme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final hasData = weightData.isNotEmpty;
 
     final spots = weightData
@@ -39,7 +48,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Statistics', style: textTheme.titleMedium,),
+        title: Text('Statistics', style: textTheme.titleMedium),
       ),
       body: hasData
           ? ListView(
@@ -55,9 +64,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                     children: [
                       Text(
                         "You're on track to reach 48kg by July 14",
-                        style: textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w600
-                        ),
+                        style: textTheme.titleSmall,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 20),
@@ -77,7 +84,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                     return LineTooltipItem(
                                       '${spot.y.toStringAsFixed(1)} kg',
                                       textTheme.bodySmall!.copyWith(
-                                        color: colorScheme.onPrimaryContainer,
+                                        color: colorScheme
+                                            .onPrimaryContainer,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     );
@@ -97,7 +105,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                         value.toInt().toString(),
                                         style: TextStyle(
                                           fontSize: 10,
-                                          color: colorScheme.onSurface,
+                                          color:
+                                          colorScheme.onSurface,
                                         ),
                                       );
                                     }
@@ -161,30 +170,127 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ),
                 const SizedBox(height: 28),
-                Text(
-                  "Today's Calories",
-                  style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)
-                ),
+                Text("Today's Calories", style: textTheme.titleSmall),
                 const SizedBox(height: 8),
                 LinearProgressIndicator(
                   value: currentCalories / dailyTargetCalories,
-                  backgroundColor:
-                  colorScheme.primary.withAlpha(40),
+                  backgroundColor: colorScheme.primary.withAlpha(40),
                   color: colorScheme.primary,
                   minHeight: 14,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   '${currentCalories.toInt()} / ${dailyTargetCalories.toInt()} kcal',
-                  style: textTheme.bodySmall?.copyWith(
+                  style: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface.withAlpha(180),
                   ),
                 ),
               ],
             ),
+          ),
+          const SizedBox(height: 24),
+          StatefulBuilder(
+            builder: (context, setInnerState) {
+              return Card(
+                margin: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero
+                ),
+                elevation: 2,
+                color: colorScheme.surface,
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        setInnerState(() {
+                          _historyExpanded = !_historyExpanded;
+                        });
+                      },
+                      child: Container(
+                        color: colorScheme.primary.withAlpha(30),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10
+                          ),
+                          leading: Icon(Icons.history,
+                              color: colorScheme.onSurface
+                          ),
+                          title: Text(
+                            'History',
+                            style: textTheme.titleSmall,
+                          ),
+                          trailing: AnimatedRotation(
+                            turns: _historyExpanded ? 0.5 : 0,
+                            duration: const Duration(milliseconds: 200),
+                            child: Icon(
+                              Icons.expand_more,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) {
+                        return SizeTransition(
+                          sizeFactor: animation,
+                          axisAlignment: -1.0,
+                          child: child,
+                        );
+                      },
+                      child: _historyExpanded
+                          ? Column(
+                        key: const ValueKey(true),
+                        children: [
+                          for (int i = 0; i < history.length; i++) ...[
+                            ListTile(
+                              contentPadding:
+                              const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 6
+                              ),
+                              leading: CircleAvatar(
+                                radius: 20,
+                                backgroundColor:
+                                colorScheme.primaryContainer,
+                                child: Icon(Icons.insights,
+                                    color: colorScheme
+                                        .onPrimaryContainer
+                                ),
+                              ),
+                              title: Text(
+                                'Date: ${history[i]['date']}',
+                                style: textTheme.bodyLarge
+                                    ?.copyWith(
+                                    fontWeight:
+                                    FontWeight.w500),
+                              ),
+                              subtitle: Text(
+                                'Weight: ${history[i]['weight']} kg | Calories: ${history[i]['calories']} kcal',
+                                style: textTheme.bodySmall,
+                              ),
+                            ),
+                            if (i < history.length - 1)
+                              const Divider(
+                                height: 1,
+                                thickness: 1,
+                                indent: 16,
+                                endIndent: 16,
+                              ),
+                          ]
+                        ],
+                      )
+                          : const SizedBox.shrink(
+                          key: ValueKey(false)
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       )
@@ -198,9 +304,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
             const SizedBox(height: 16),
             Text(
               'Your progress and statistics will be displayed here.',
-              style: textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey
-              )
+              style: textTheme.bodyMedium
+                  ?.copyWith(color: Colors.grey),
             ),
           ],
         ),
