@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:share_plus/share_plus.dart'; // Share plugin
 
 class WeightEntry {
   final String date;
@@ -33,6 +34,18 @@ class _StatisticsPageState extends State<StatisticsPage> {
   ];
 
   bool _historyExpanded = false;
+
+  // Function to share the latest result
+  void _shareResult() {
+    final latest = history.last;
+    final message = '📊 My Progress:\n\n' +
+        'Date: ${latest['date']}\n' +
+        'Weight: ${latest['weight']} kg\n' +
+        'Calories: ${latest['calories']} kcal\n\n' +
+        'Tracking my results with Neofit!';
+
+    Share.share(message);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,6 +205,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
             ),
           ),
           const SizedBox(height: 24),
+
+          // Collapsible history section
           StatefulBuilder(
             builder: (context, setInnerState) {
               return Card(
@@ -246,7 +261,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
                           ? Column(
                         key: const ValueKey(true),
                         children: [
-                          for (int i = 0; i < history.length; i++) ...[
+                          for (int i = 0;
+                          i < history.length;
+                          i++) ...[
                             ListTile(
                               contentPadding:
                               const EdgeInsets.symmetric(
@@ -292,14 +309,30 @@ class _StatisticsPageState extends State<StatisticsPage> {
               );
             },
           ),
+
+          const SizedBox(height: 24),
+
+          // Share button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ElevatedButton.icon(
+              onPressed: _shareResult,
+              icon: const Icon(Icons.share),
+              label: const Text('Share Result'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+              ),
+            ),
+          ),
         ],
       )
           : Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.bar_chart,
-                size: 64, color: colorScheme.primary
+            Icon(
+              Icons.bar_chart,
+              size: 64, color: colorScheme.primary
             ),
             const SizedBox(height: 16),
             Text(
