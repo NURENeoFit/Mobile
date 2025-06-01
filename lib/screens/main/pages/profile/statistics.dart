@@ -22,6 +22,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
     WeightEntry('07/14', 48),
   ];
 
+  final double currentCalories = 1200;
+  final double dailyTargetCalories = 1800;
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
@@ -159,6 +162,26 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       ),
                     ],
                   )
+                ),
+                const SizedBox(height: 28),
+                Text(
+                  "Today's Calories",
+                  style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)
+                ),
+                const SizedBox(height: 8),
+                LinearProgressIndicator(
+                  value: currentCalories / dailyTargetCalories,
+                  backgroundColor:
+                  colorScheme.primary.withAlpha(40),
+                  color: colorScheme.primary,
+                  minHeight: 14,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${currentCalories.toInt()} / ${dailyTargetCalories.toInt()} kcal',
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurface.withAlpha(180),
+                  ),
                 ),
               ],
             ),
