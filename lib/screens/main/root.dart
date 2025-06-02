@@ -31,65 +31,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  // Each screen defines its own UI configuration
-  late final List<_ScreenConfig> _screens;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _screens = [
-          _ScreenConfig(
-            appBar: AppBar(
-              title: Text(
-                'NeoFit',
-                style: TextTheme.of(context).headlineMedium
-              )
-            ),
-            body: HomePage(),
-            fab: null,
-            showBottomNav: true,
-          ),
-          _ScreenConfig(
-            appBar: AppBar(
-              title: Text(
-                'Calculate Calories',
-                style: TextTheme.of(context).headlineMedium
-              ),
-              centerTitle: true,
-            ), // no AppBar
-            body: CaloriesPage(),
-            fab: null,
-            showBottomNav: true,
-          ),
-          _ScreenConfig(
-            appBar: AppBar(
-              title: Text(
-                'Trainings',
-                style: TextTheme.of(context).headlineMedium
-              )
-            ),
-            body: TrainingsPage(),
-            fab: null,
-            showBottomNav: true,
-          ),
-          _ScreenConfig(
-            appBar: AppBar(
-              title: Text(
-                'Profile',
-                style: TextTheme.of(context).headlineMedium
-              )
-            ),
-            body: ProfilePage(),
-            fab: null,
-            showBottomNav: true,
-          ),
-        ];
-      });
-    });
-  }
-
   void _onTap(int index) {
     setState(() {
       _selectedIndex = index;
@@ -98,7 +39,47 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final current = _screens[_selectedIndex];
+    final screens = [
+      _ScreenConfig(
+        appBar: AppBar(
+          title: Text(
+            'NeoFit',
+            style: TextTheme.of(context).headlineMedium,
+          ),
+        ),
+        body: const HomePage(),
+      ),
+      _ScreenConfig(
+        appBar: AppBar(
+          title: Text(
+            'Calculate Calories',
+            style: TextTheme.of(context).headlineMedium,
+          ),
+          centerTitle: true,
+        ),
+        body: const CaloriesPage(),
+      ),
+      _ScreenConfig(
+        appBar: AppBar(
+          title: Text(
+            'Trainings',
+            style: TextTheme.of(context).headlineMedium,
+          ),
+        ),
+        body: const TrainingsPage(),
+      ),
+      _ScreenConfig(
+        appBar: AppBar(
+          title: Text(
+            'Profile',
+            style: TextTheme.of(context).headlineMedium,
+          ),
+        ),
+        body: const ProfilePage(),
+      ),
+    ];
+
+    final current = screens[_selectedIndex];
 
     return Scaffold(
       backgroundColor: current.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
