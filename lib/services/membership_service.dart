@@ -4,7 +4,7 @@ import 'package:neofit_mobile/models/membership.dart';
 class MembershipService {
   final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:5000/api'));
 
-  Future<Membership> fetchMembershipForUser() async {
+  Future<Membership?> fetchMembershipForUser() async {
     // Temporary test data (while backend is not available)
     return Membership.fromJson({
       'user_id': 123456,
@@ -22,14 +22,17 @@ class MembershipService {
     /*
     try {
       final response = await _dio.get('/membership');
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        return Membership.fromJson(response.data);
-      } else {
-        throw Exception('Unexpected response: ${response.statusCode}');
+
+      final data = response.statusCode == 200 ? response.data : null;
+
+      if (data is Map<String, dynamic>) {
+        return Membership.fromJson(data);
       }
     } catch (e) {
-      throw Exception('Error fetching membership: $e');
+      print('Error fetching membership: $e');
     }
+
+    return null;
     */
   }
 }
