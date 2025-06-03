@@ -1,10 +1,10 @@
 enum MealType { breakfast, lunch, dinner }
 
 class UserMeal {
-  final MealType type;
-  final int calories;
-  final DateTime createdTime;
-  final String? notes;
+  MealType type;
+  int calories;
+  DateTime createdTime;
+  String? notes;
 
   UserMeal({
     required this.type,
