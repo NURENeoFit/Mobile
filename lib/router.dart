@@ -9,7 +9,7 @@ import 'package:neofit_mobile/screens/main/pages/profile/favourites.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/settings.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/statistics.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/abonnement.dart';
-import 'package:neofit_mobile/screens/main/pages/trainings/exercise.dart';
+import 'package:neofit_mobile/screens/main/pages/trainings/exercises.dart';
 import 'package:neofit_mobile/screens/register/register_screen.dart';
 import 'package:neofit_mobile/screens/main/root.dart';
 
@@ -49,10 +49,10 @@ final GoRouter appRouter = GoRouter(
           path: 'abonnement',
           builder: (context, state) => const AbonnementPage(),
         ),
-        // GoRoute(
-        //   path: 'favourites',
-        //   builder: (context, state) => const FavouritesPage(),
-        // ),
+        GoRoute(
+          path: 'favourites',
+          builder: (context, state) => const FavouritesPage(),
+        ),
         GoRoute(
           path: 'statistics',
           builder: (context, state) => const StatisticsPage(),
