@@ -1,75 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:neofit_mobile/providers/user_profile_provider.dart';
 
-class DetailsPage extends StatelessWidget {
+class DetailsPage extends ConsumerStatefulWidget {
   const DetailsPage({super.key});
 
   @override
+  ConsumerState<DetailsPage> createState() => _DetailsPageState();
+}
+
+class _DetailsPageState extends ConsumerState<DetailsPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(userProfileNotifierProvider.notifier).refresh();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Simulated user data
-    final String username = 'anna.smith';
-    final String email = 'anna@example.com';
-    final String phone = '+1234567890';
-    final String dateOfBirth = '2006-04-15';
-
-    final String firstName = 'Anna';
-    final String lastName = 'Smith';
-    final String gender = 'Female';
-    final String age = '18';
-    final String height = '170 cm';
-    final String weight = '65.0 kg';
-    final String units = 'kg / cm';
-    final String target = 'Build muscles';
-
-    // Recommendation data
-    final Map<String, String> recommendations = {
-      'Calorie intake': '2509',
-      'Water intake': '2,5 l',
-      'Steps per day': '8 000',
-    };
-
-    // Account info section
-    final Map<String, String?> accountDetails = {
-      'Username': username,
-      'Email': email,
-      'Phone': phone,
-      'Date of birth': dateOfBirth,
-    };
-
-    // Profile info section
-    final Map<String, String?> profileDetails = {
-      'Name': '$firstName $lastName',
-      'Gender': gender,
-      'Age': age,
-      'Height': height,
-      'Weight': weight,
-      'Units of measurement': units,
-      'Target': target,
-    };
+    final profileAsync = ref.watch(userProfileNotifierProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(title: Text('My details', style: TextTheme.of(context).headlineMedium)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildCardSection(
-            context: context,
-            title: 'Account',
-            entries: accountDetails,
-          ),
-          const SizedBox(height: 24),
-          _buildCardSection(
-            context: context,
-            title: 'Profile',
-            entries: profileDetails,
-          ),
-          const SizedBox(height: 24),
-          _buildCardSection(
-            context: context,
-            title: 'Recommendations',
-            entries: recommendations,
-          ),
-        ],
+      appBar: AppBar(title: Text('My details', style: Theme.of(context).textTheme.headlineMedium)),
+      body: profileAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('Error: $e')),
+        data: (profile) {
+          if (profile == null) {
+            return const Center(child: Text('No profile data found'));
+          }
+
+          final user = profile.user;
+          final accountDetails = {
+            'Username': user.username,
+            'Email': user.userEmail,
+            'Phone': user.userPhone,
+            'Date of birth': user.userDob.toIso8601String().split('T').first,
+          };
+
+          final personal = profile.personalData;
+          final profileDetails = {
+            'Name': '${user.userFirstName} ${user.userLastName}',
+            'Gender': personal.gender.name[0].toUpperCase() + personal.gender.name.substring(1),
+            'Age': personal.age.toString(),
+            'Height': '${personal.heightCm.round()} cm',
+            'Weight': '${personal.weightKg} kg',
+            'Units of measurement': 'kg / cm',
+            'Target': personal.goal.description,
+          };
+
+          final recommendations = {
+            'Calorie intake': '2509',
+            'Water intake': '2,5 l',
+            'Steps per day': '8 000',
+          };
+
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              _buildCardSection(
+                context: context,
+                title: 'Account',
+                entries: accountDetails,
+              ),
+              const SizedBox(height: 24),
+              _buildCardSection(
+                context: context,
+                title: 'Profile',
+                entries: profileDetails,
+              ),
+              const SizedBox(height: 24),
+              _buildCardSection(
+                context: context,
+                title: 'Recommendations',
+                entries: recommendations,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -85,15 +96,15 @@ class DetailsPage extends StatelessWidget {
         if (title != null) ...[
           Text(
             title,
-            style: TextTheme.of(context).titleMedium?.copyWith(
-              color: ColorScheme.of(context).onSurface,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
         ],
         Container(
           decoration: BoxDecoration(
-            color: ColorScheme.of(context).surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -103,14 +114,14 @@ class DetailsPage extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
-                    title: Text(entry.key, style: TextTheme.of(context).bodyMedium?.copyWith(
-                      color: ColorScheme.of(context).onSurface,
+                    title: Text(entry.key, style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
                     )),
                     trailing: entry.value != null
                         ? Text(
                       entry.value!,
-                      style: TextTheme.of(context).bodyMedium?.copyWith(
-                        color: ColorScheme.of(context).primary,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w600,
                       ),
                     )
