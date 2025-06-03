@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // добавь импорт Riverpod
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neofit_mobile/models/trainer.dart';
 import 'package:neofit_mobile/models/workout_program.dart';
+import 'package:neofit_mobile/providers/workout_provider.dart'; // провайдер тренеров
 
-class TrainingDetailPage extends StatefulWidget {
+class TrainingDetailPage extends ConsumerStatefulWidget {
   final WorkoutProgram workoutProgram;
   final Trainer trainer;
 
@@ -14,15 +16,18 @@ class TrainingDetailPage extends StatefulWidget {
   });
 
   @override
-  State<TrainingDetailPage> createState() => _TrainingDetailPageState();
+  ConsumerState<TrainingDetailPage> createState() => _TrainingDetailPageState();
 }
 
-class _TrainingDetailPageState extends State<TrainingDetailPage> {
+class _TrainingDetailPageState extends ConsumerState<TrainingDetailPage> {
   bool isFavorite = false;
 
   @override
   void initState() {
     super.initState();
+    Future.microtask(() {
+      ref.read(trainerNotifierProvider.notifier).refresh();
+    });
     _loadFavoriteStatus();
   }
 
