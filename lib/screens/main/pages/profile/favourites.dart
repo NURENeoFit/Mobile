@@ -61,7 +61,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
   }
 
   Widget _buildWorkoutTile(Workout item) {
-    final iconData = iconMap[item.icon] ?? Icons.fitness_center;
+    // final iconData = iconMap[item.icon] ?? Icons.fitness_center;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
@@ -74,7 +74,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           leading: CircleAvatar(
             backgroundColor: ColorScheme.of(context).primaryContainer,
-            child: Icon(iconData, color: ColorScheme.of(context).onPrimaryContainer),
+            // child: Icon(iconData, color: ColorScheme.of(context).onPrimaryContainer),
           ),
           title: Text(item.name, style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
           subtitle: Text(item.coach, style: TextTheme.of(context).bodySmall),

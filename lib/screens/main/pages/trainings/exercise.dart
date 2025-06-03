@@ -49,7 +49,7 @@ class _TrainingDetailPageState extends State<TrainingDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final iconData = iconMap[widget.workout.icon] ?? Icons.fitness_center;
+    // final iconData = iconMap[widget.workout.icon] ?? Icons.fitness_center;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +66,7 @@ class _TrainingDetailPageState extends State<TrainingDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(iconData, size: 80, color: ColorScheme.of(context).primary),
+            // Icon(iconData, size: 80, color: ColorScheme.of(context).primary),
             const SizedBox(height: 24),
             Text(widget.workout.name, style: TextTheme.of(context).titleMedium),
             const SizedBox(height: 8),

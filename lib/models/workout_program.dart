@@ -8,6 +8,7 @@ class WorkoutProgram {
   final int duration;
   final String programType;
   final List<Exercise> exercises;
+  final String icon;
 
   WorkoutProgram({
     required this.id,
@@ -17,6 +18,7 @@ class WorkoutProgram {
     required this.duration,
     required this.programType,
     required this.exercises,
+    required this.icon,
   });
 
   factory WorkoutProgram.fromJson(Map<String, dynamic> json) => WorkoutProgram(
@@ -29,6 +31,7 @@ class WorkoutProgram {
     exercises: (json['exercises'] as List<dynamic>)
         .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
         .toList(),
+    icon: json['icon'] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
@@ -39,5 +42,6 @@ class WorkoutProgram {
     'duration': duration,
     'programType': programType,
     'exercises': exercises.map((e) => e.toJson()).toList(),
+    'icon': icon,
   };
 }

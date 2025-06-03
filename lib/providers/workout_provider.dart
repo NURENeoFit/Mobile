@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neofit_mobile/models/trainer.dart';
 import 'package:neofit_mobile/services/workout_service.dart';
@@ -18,3 +19,14 @@ class TrainerNotifier extends AsyncNotifier<List<Trainer>> {
     state = AsyncData(data);
   }
 }
+
+const Map<String, IconData> iconMap = {
+  'fitness_center': Icons.fitness_center,
+  'directions_run': Icons.directions_run,
+  'self_improvement': Icons.self_improvement,
+  'sports': Icons.sports,
+  'sports_martial_arts': Icons.sports_martial_arts,
+  'accessibility': Icons.accessibility,
+  'accessibility_new': Icons.accessibility_new,
+  'music_note': Icons.music_note,
+};

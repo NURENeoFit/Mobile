@@ -23,6 +23,7 @@ class TrainerService {
             'goalId': 1,
             'duration': 30,
             'programType': 'Cardio',
+            'icon': 'directions_run',
             'exercises': [
               {
                 'id': 1,
@@ -45,6 +46,7 @@ class TrainerService {
             'goalId': 2,
             'duration': 45,
             'programType': 'Strength',
+            'icon': 'fitness_center',
             'exercises': [
               {
                 'id': 3,
@@ -78,6 +80,7 @@ class TrainerService {
             'goalId': 3,
             'duration': 60,
             'programType': 'Yoga',
+            'icon': 'self_improvement',
             'exercises': [
               {
                 'id': 5,
@@ -100,6 +103,7 @@ class TrainerService {
             'goalId': 4,
             'duration': 30,
             'programType': 'HIIT',
+            'icon': 'sports',
             'exercises': [
               {
                 'id': 7,
@@ -133,6 +137,7 @@ class TrainerService {
             'goalId': 5,
             'duration': 45,
             'programType': 'Stretching',
+            'icon': 'self_improvement',
             'exercises': [
               {
                 'id': 9,
@@ -155,6 +160,7 @@ class TrainerService {
             'goalId': 6,
             'duration': 50,
             'programType': 'Pilates',
+            'icon': 'fitness_center',
             'exercises': [
               {
                 'id': 11,
@@ -188,6 +194,7 @@ class TrainerService {
             'goalId': 7,
             'duration': 40,
             'programType': 'Boxing',
+            'icon': 'sports_martial_arts',
             'exercises': [
               {
                 'id': 13,
@@ -210,6 +217,7 @@ class TrainerService {
             'goalId': 8,
             'duration': 30,
             'programType': 'HIIT',
+            'icon': 'sports',
             'exercises': [
               {
                 'id': 15,
@@ -249,4 +257,3 @@ class TrainerService {
      */
   }
 }
-
