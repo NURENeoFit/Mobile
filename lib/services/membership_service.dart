@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:neofit_mobile/models/membership.dart';
+import 'package:neofit_mobile/models/membership/membership.dart';
 
 class MembershipService {
   final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:5000/api'));
