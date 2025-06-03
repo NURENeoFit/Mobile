@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neofit_mobile/models/trainer.dart';
+import 'package:neofit_mobile/models/workout_program.dart';
 import 'package:neofit_mobile/providers/workout_provider.dart';
 
 class TrainingsPage extends ConsumerStatefulWidget {
@@ -19,7 +20,6 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
       ref.read(trainerNotifierProvider.notifier).refresh();
     });
@@ -27,18 +27,29 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
 
   void updateSearch(String query) {
     setState(() {
-      searchQuery = query.toLowerCase();
+      searchQuery = query.toLowerCase().trim();
+
       filteredTrainers = allTrainers.where((trainer) {
-        return trainer.trainerFirstName.toLowerCase().contains(searchQuery) ||
-            trainer.trainerLastName.toLowerCase().contains(searchQuery) ||
-            trainer.workoutPrograms.any((program) =>
-                program.name.toLowerCase().contains(searchQuery));
+        final firstName = trainer.trainerFirstName.toLowerCase();
+        final lastName = trainer.trainerLastName.toLowerCase();
+        final fullName = '$firstName $lastName';
+        final reversedFullName = '$lastName $firstName';
+
+        final matchesTrainer = fullName.contains(searchQuery) ||
+            reversedFullName.contains(searchQuery) ||
+            firstName.contains(searchQuery) ||
+            lastName.contains(searchQuery);
+
+        final matchesProgram = trainer.workoutPrograms.any(
+                (program) => program.name.toLowerCase().contains(searchQuery));
+
+        return matchesTrainer || matchesProgram;
       }).toList();
     });
   }
 
-  Widget _buildTrainerTile(Trainer trainer) {
-    final iconData = iconMap[trainer.workoutPrograms[0].icon] ?? Icons.fitness_center;
+  Widget _buildTrainerProgramCard(Trainer trainer, WorkoutProgram program) {
+    final iconData = iconMap[program.icon] ?? Icons.fitness_center;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
@@ -49,10 +60,14 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
         child: ListTile(
           splashColor: Colors.transparent,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          title: Text('${trainer.workoutPrograms[0].name}',
-              style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: FontWeight.w500)),
-          subtitle: Text('Coach: ${trainer.trainerFirstName} ${trainer.trainerLastName}',
-              style: TextTheme.of(context).bodySmall),
+          title: Text(
+            program.name,
+            style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+          ),
+          subtitle: Text(
+            'Coach: ${trainer.trainerFirstName} ${trainer.trainerLastName}',
+            style: TextTheme.of(context).bodySmall,
+          ),
           leading: CircleAvatar(
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             child: Icon(
@@ -78,13 +93,24 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
       error: (error, _) => Center(child: Text('Error: $error')),
       data: (trainers) {
         allTrainers = trainers;
+
         filteredTrainers = searchQuery.isEmpty
             ? allTrainers
             : allTrainers.where((trainer) {
-          return trainer.trainerFirstName.toLowerCase().contains(searchQuery) ||
-              trainer.trainerLastName.toLowerCase().contains(searchQuery) ||
-              trainer.workoutPrograms.any((program) =>
-                  program.name.toLowerCase().contains(searchQuery));
+          final firstName = trainer.trainerFirstName.toLowerCase();
+          final lastName = trainer.trainerLastName.toLowerCase();
+          final fullName = '$firstName $lastName';
+          final reversedFullName = '$lastName $firstName';
+
+          final matchesTrainer = fullName.contains(searchQuery) ||
+              reversedFullName.contains(searchQuery) ||
+              firstName.contains(searchQuery) ||
+              lastName.contains(searchQuery);
+
+          final matchesProgram = trainer.workoutPrograms.any((program) =>
+              program.name.toLowerCase().contains(searchQuery));
+
+          return matchesTrainer || matchesProgram;
         }).toList();
 
         final hasTrainers = allTrainers.isNotEmpty;
@@ -117,7 +143,28 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
                     : ListView.builder(
                   itemCount: filteredTrainers.length,
                   itemBuilder: (context, index) {
-                    return _buildTrainerTile(filteredTrainers[index]);
+                    final trainer = filteredTrainers[index];
+
+                    final firstName = trainer.trainerFirstName.toLowerCase();
+                    final lastName = trainer.trainerLastName.toLowerCase();
+                    final fullName = '$firstName $lastName';
+                    final reversedFullName = '$lastName $firstName';
+
+                    final isTrainerMatch = fullName.contains(searchQuery) ||
+                        reversedFullName.contains(searchQuery) ||
+                        firstName.contains(searchQuery) ||
+                        lastName.contains(searchQuery);
+
+                    final filteredPrograms = isTrainerMatch
+                        ? trainer.workoutPrograms
+                        : trainer.workoutPrograms.where((program) =>
+                        program.name.toLowerCase().contains(searchQuery)).toList();
+
+                    return Column(
+                      children: filteredPrograms
+                          .map((program) => _buildTrainerProgramCard(trainer, program))
+                          .toList(),
+                    );
                   },
                 ),
               ),
