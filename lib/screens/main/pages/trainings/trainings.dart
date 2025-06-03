@@ -77,8 +77,14 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
           ),
           trailing: const Icon(Icons.arrow_forward_ios, size: 16),
           onTap: () {
-            context.push('/trainer/${trainer.trainerId}', extra: trainer);
-          },
+            context.push(
+              '/program_detail',
+              extra: {
+                'workoutProgram': program,
+                'trainer': trainer,
+              },
+            );
+          }
         ),
       ),
     );

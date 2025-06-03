@@ -1,4 +1,5 @@
 import 'package:neofit_mobile/models/exercise.dart';
+import 'package:flutter/material.dart';
 
 class WorkoutProgram {
   final int id;
@@ -45,3 +46,14 @@ class WorkoutProgram {
     'icon': icon,
   };
 }
+
+const Map<String, IconData> iconMap = {
+  'fitness_center': Icons.fitness_center,
+  'directions_run': Icons.directions_run,
+  'self_improvement': Icons.self_improvement,
+  'sports': Icons.sports,
+  'sports_martial_arts': Icons.sports_martial_arts,
+  'accessibility': Icons.accessibility,
+  'accessibility_new': Icons.accessibility_new,
+  'music_note': Icons.music_note,
+};
