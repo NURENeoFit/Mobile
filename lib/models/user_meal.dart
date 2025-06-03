@@ -13,6 +13,18 @@ class UserMeal {
     this.notes,
   });
 
+  UserMeal copyWith({
+    MealType? type,
+    int? calories,
+    DateTime? createdTime,
+  }) {
+    return UserMeal(
+      type: type ?? this.type,
+      calories: calories ?? this.calories,
+      createdTime: createdTime ?? this.createdTime,
+    );
+  }
+
   factory UserMeal.fromJson(Map<String, dynamic> json) => UserMeal(
     type: MealType.values.firstWhere((e) => e.name == json['type']),
     calories: json['calories'],

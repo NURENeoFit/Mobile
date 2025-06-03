@@ -24,7 +24,7 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
     super.initState();
     // Trigger refresh when entering page
     Future.microtask(() {
-      ref.read(userMealNotifierProvider.notifier).refresh(); // Обновляем данные
+      ref.read(userMealNotifierProvider.notifier).refresh();
     });
 
     _breakfastController.addListener(_updateInputs);
@@ -75,11 +75,8 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
                       input: _breakfastInput,
                       total: breakfastTotal,
                       onAdd: () {
-                        setState(() {
-                          breakfastMeal.calories += _breakfastInput;
-                          _breakfastController.clear();
-                          _breakfastInput = 0;
-                        });
+                        ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.breakfast, _breakfastInput);
+                        _breakfastController.clear();
                       },
                     ),
                     _buildMealCard(
@@ -88,11 +85,8 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
                       input: _lunchInput,
                       total: lunchTotal,
                       onAdd: () {
-                        setState(() {
-                          lunchMeal.calories += _lunchInput;
-                          _lunchController.clear();
-                          _lunchInput = 0;
-                        });
+                        ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.lunch, _lunchInput);
+                        _lunchController.clear();
                       },
                     ),
                     _buildMealCard(
@@ -101,11 +95,8 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
                       input: _dinnerInput,
                       total: dinnerTotal,
                       onAdd: () {
-                        setState(() {
-                          dinnerMeal.calories += _dinnerInput;
-                          _dinnerController.clear();
-                          _dinnerInput = 0;
-                        });
+                        ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.dinner, _dinnerInput);
+                        _dinnerController.clear();
                       },
                     ),
                     const SizedBox(height: 8),
