@@ -4,7 +4,6 @@ class Training {
   final String specializationName;
   final String fitnessRoomName;
   final DateTime date;
-  final TimeOfDay time;
   final String startTime;
   final String endTime;
   final String fullNameTrainer;
@@ -15,7 +14,6 @@ class Training {
     required this.specializationName,
     required this.fitnessRoomName,
     required this.date,
-    required this.time,
     required this.startTime,
     required this.endTime,
     required this.fullNameTrainer,
@@ -24,19 +22,16 @@ class Training {
   });
 
   factory Training.fromJson(Map<String, dynamic> json) {
-    final parsedDate = DateTime.parse(json['date_of_day']);
-
     return Training(
-      specializationName: json['specialization_name'],
-      fitnessRoomName: json['fitness_room_name'],
-      date: parsedDate,
-      time: TimeOfDay(hour: parsedDate.hour, minute: parsedDate.minute),
-      startTime: json['start_time'],
-      endTime: json['end_time'],
+      specializationName: json['specialization_name'] ?? '',
+      fitnessRoomName: json['fitness_room_name'] ?? '',
+      date: DateTime.parse(json['date_of_day']),
+      startTime: json['start_time'] ?? '',
+      endTime: json['end_time'] ?? '',
       fullNameTrainer:
       '${json['trainer_first_name'] ?? ''} ${json['trainer_last_name'] ?? ''}'.trim(),
-      type: json['type'],
-      isGroup: json['is_group'],
+      type: json['type'] ?? '',
+      isGroup: json['is_group'] ?? '',
     );
   }
 

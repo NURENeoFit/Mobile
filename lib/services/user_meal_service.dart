@@ -8,6 +8,7 @@ class UserMealService {
   final Dio _dio = DioClient.instance;
 
   Future<List<UserMeal>> fetchMealsForUser() async {
+    /*
     // removeMealsFromCache();
 
     final prefs = await SharedPreferences.getInstance();
@@ -54,11 +55,10 @@ class UserMealService {
 
     await saveMeals(testMeals);
     return testMeals;
+    */
 
-    // Real backend request (uncomment when backend is ready)
-    /*
     try {
-      final response = await _dio.get('/meals');
+      final response = await _dio.get('/userMeals');
 
       if (response.statusCode == 200 && response.data is List) {
         final meals = (response.data as List)
@@ -74,7 +74,6 @@ class UserMealService {
     }
 
     return [];
-    */
   }
 
   Future<void> saveMeals(List<UserMeal> meals) async {

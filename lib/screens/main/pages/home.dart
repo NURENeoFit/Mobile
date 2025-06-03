@@ -176,12 +176,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${training.type} with ${training.fullNameTrainer}',
+                                    '${training.specializationName} with ${training.fullNameTrainer}',
                                     style: TextTheme.of(context).bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '${training.time.format(context)} • ${training.isGroup ? 'Group' : 'Individual'}',
+                                    '${training.startTime} • ${training.isGroup ? 'Group' : 'Individual'}',
                                     style: TextTheme.of(context).bodyMedium?.copyWith(
                                       color: ColorScheme.of(context).onSurface.withAlpha(100),
                                     ),

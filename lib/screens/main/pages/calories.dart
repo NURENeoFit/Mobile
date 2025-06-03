@@ -53,74 +53,78 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
     final mealsAsync = ref.watch(userMealNotifierProvider);
 
     return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            mealsAsync.when(
-              data: (meals) {
-                final breakfastMeal = meals.firstWhere((meal) => meal.type == MealType.breakfast, orElse: () => UserMeal(type: MealType.breakfast, calories: 0, createdTime: DateTime.now()));
-                final lunchMeal = meals.firstWhere((meal) => meal.type == MealType.lunch, orElse: () => UserMeal(type: MealType.lunch, calories: 0, createdTime: DateTime.now()));
-                final dinnerMeal = meals.firstWhere((meal) => meal.type == MealType.dinner, orElse: () => UserMeal(type: MealType.dinner, calories: 0, createdTime: DateTime.now()));
-
-                final breakfastTotal = breakfastMeal.calories + _breakfastInput;
-                final lunchTotal = lunchMeal.calories + _lunchInput;
-                final dinnerTotal = dinnerMeal.calories + _dinnerInput;
-
-                return Column(
-                  children: [
-                    _buildMealCard(
-                      title: 'Breakfast',
-                      controller: _breakfastController,
-                      input: _breakfastInput,
-                      total: breakfastTotal,
-                      onAdd: () {
-                        ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.breakfast, _breakfastInput);
-                        _breakfastController.clear();
-                      },
-                    ),
-                    _buildMealCard(
-                      title: 'Lunch',
-                      controller: _lunchController,
-                      input: _lunchInput,
-                      total: lunchTotal,
-                      onAdd: () {
-                        ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.lunch, _lunchInput);
-                        _lunchController.clear();
-                      },
-                    ),
-                    _buildMealCard(
-                      title: 'Dinner',
-                      controller: _dinnerController,
-                      input: _dinnerInput,
-                      total: dinnerTotal,
-                      onAdd: () {
-                        ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.dinner, _dinnerInput);
-                        _dinnerController.clear();
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      decoration: BoxDecoration(
-                        color: ColorScheme.of(context).primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        'Total calories: ${breakfastTotal + lunchTotal + dinnerTotal}',
-                        style: TextTheme.of(context).titleMedium,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stackTrace) => Center(child: Text('Error: $error')),
-            ),
-          ],
+      child: mealsAsync.when(
+        data: (meals) => SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _buildMealCard(
+                title: 'Breakfast',
+                controller: _breakfastController,
+                input: _breakfastInput,
+                total: (meals.firstWhere(
+                      (meal) => meal.type == MealType.breakfast,
+                  orElse: () => UserMeal(
+                      type: MealType.breakfast,
+                      calories: 0,
+                      createdTime: DateTime.now()),
+                ).calories) + _breakfastInput,
+                onAdd: () {
+                  ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.breakfast, _breakfastInput);
+                  _breakfastController.clear();
+                },
+              ),
+              _buildMealCard(
+                title: 'Lunch',
+                controller: _lunchController,
+                input: _lunchInput,
+                total: (meals.firstWhere(
+                      (meal) => meal.type == MealType.lunch,
+                  orElse: () => UserMeal(
+                      type: MealType.lunch,
+                      calories: 0,
+                      createdTime: DateTime.now()),
+                ).calories) + _lunchInput,
+                onAdd: () {
+                  ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.lunch, _lunchInput);
+                  _lunchController.clear();
+                },
+              ),
+              _buildMealCard(
+                title: 'Dinner',
+                controller: _dinnerController,
+                input: _dinnerInput,
+                total: (meals.firstWhere(
+                      (meal) => meal.type == MealType.dinner,
+                  orElse: () => UserMeal(
+                      type: MealType.dinner,
+                      calories: 0,
+                      createdTime: DateTime.now()),
+                ).calories) + _dinnerInput,
+                onAdd: () {
+                  ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.dinner, _dinnerInput);
+                  _dinnerController.clear();
+                },
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'Total calories: ${meals.fold<int>(0, (sum, meal) => sum + meal.calories) + _breakfastInput + _lunchInput + _dinnerInput}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
         ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
     );
   }
