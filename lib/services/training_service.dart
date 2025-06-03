@@ -5,9 +5,9 @@ import 'package:neofit_mobile/models/schedule/training.dart';
 class TrainingService {
   final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:5000/api'));
 
-  Future<List<Training>> fetchTrainingsForUser() async {
+  Future<Map<DateTime, List<Training>>> fetchTrainingsForUserGroupedByDate() async {
     // Temporary test data (while backend is not available)
-    return [
+    final List<Training> trainings = [
       Training(
         specializationName: 'Leg Day',
         fitnessRoomName: 'Room 1',
@@ -54,21 +54,48 @@ class TrainingService {
       ),
     ];
 
+    final Map<DateTime, List<Training>> grouped = {};
+
+    for (final training in trainings) {
+      final dateKey = DateTime.utc(
+        training.date.year,
+        training.date.month,
+        training.date.day,
+      );
+
+      grouped.putIfAbsent(dateKey, () => []).add(training);
+    }
+
+    return grouped;
+
     // Real request (uncomment when backend is ready)
     /*
     try {
       final response = await _dio.get('/trainings');
 
       if (response.statusCode == 200 && response.data is List) {
-        return (response.data as List)
+        final trainings = (response.data as List)
             .map((e) => Training.fromJson(e))
             .toList();
+
+        final Map<DateTime, List<Training>> grouped = {};
+
+        for (final training in trainings) {
+          final dateKey = DateTime.utc(
+            training.date.year,
+            training.date.month,
+            training.date.day,
+          );
+          grouped.putIfAbsent(dateKey, () => []).add(training);
+        }
+
+        return grouped;
       }
     } catch (e) {
       print('Error fetching trainings: $e');
     }
 
-    return [];
+    return {};
     */
   }
 }
