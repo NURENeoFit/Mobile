@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:neofit_mobile/services/dio_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neofit_mobile/models/user_meal.dart';
 
 class UserMealService {
-  final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:5000/api'));
+  final Dio _dio = DioClient.instance;
 
   Future<List<UserMeal>> fetchMealsForUser() async {
     // removeMealsFromCache();

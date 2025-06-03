@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:neofit_mobile/services/dio_client.dart';
 import 'package:neofit_mobile/models/trainer.dart';
 
 class TrainerService {
-  final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:5000/api'));
+  final Dio _dio = DioClient.instance;
 
   Future<List<Trainer>> fetchTrainersWithProgramsAndExercises() async {
     // Temporary test data (while backend is not available)

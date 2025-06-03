@@ -1,9 +1,11 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:neofit_mobile/services/dio_client.dart';
+
 import 'package:neofit_mobile/models/schedule/training.dart';
 
 class TrainingService {
-  final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:5000/api'));
+  final Dio _dio = DioClient.instance;
 
   Future<Map<DateTime, List<Training>>> fetchTrainingsForUserGroupedByDate() async {
     // Temporary test data (while backend is not available)
