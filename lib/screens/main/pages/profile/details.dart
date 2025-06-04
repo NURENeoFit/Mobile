@@ -30,7 +30,19 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (profile) {
           if (profile == null) {
-            return const Center(child: Text('No profile data found'));
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.person, size: 64, color: ColorScheme.of(context).primary),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Your profile details will be displayed here.',
+                    style: TextTheme.of(context).bodyMedium?.copyWith(color: Colors.grey),
+                  ),
+                ],
+              ),
+            );
           }
 
           final user = profile.user;
