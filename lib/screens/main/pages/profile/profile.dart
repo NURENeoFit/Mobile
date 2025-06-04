@@ -64,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
             // Show confirmation (optional)
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('You have logged out.')),
+              const SnackBar(content: Center(child: Text('You have logged out.'))),
             );
 
             // Navigate to login and clear navigation stack

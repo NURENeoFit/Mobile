@@ -39,14 +39,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     final googleAuth = await GoogleAuthService().signIn();
     if (googleAuth?.idToken == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google sign-in failed!')),
+        const SnackBar(content: Center(child: Text('Google sign-in failed!'))),
       );
       return;
     }
     final backendToken = await BackendAuthService().signInWithGoogleIdToken(googleAuth!.idToken!);
     if (backendToken == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google login failed on server!')),
+        const SnackBar(content: Center(child: Text('Google login failed on server!'))),
       );
       return;
     }
@@ -55,7 +55,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     // await AuthStorage.saveToken(backendToken);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Login via Google successful!')),
+      const SnackBar(content: Center(child: Text('Login via Google successful!'))),
     );
     context.go('/'); // Go to main page or home page
   }
@@ -67,13 +67,13 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     ref.listen(loginProvider, (previous, next) {
       if (next.status == LoginStatus.success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login successful!')),
+          const SnackBar(content: Center(child: Text('Login successful!'))),
         );
         context.go('/'); // Go to main screen
       }
       if (next.status == LoginStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error ?? 'Login error')),
+          SnackBar(content: Center(child: Text(next.error ?? 'Login error'))),
         );
       }
     });

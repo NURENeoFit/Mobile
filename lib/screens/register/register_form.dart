@@ -44,14 +44,14 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     final googleAuth = await GoogleAuthService().signIn();
     if (googleAuth?.idToken == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google sign-in failed!')),
+        const SnackBar(content: Center(child: Text('Google sign-in failed!'))),
       );
       return;
     }
     final backendToken = await BackendAuthService().signInWithGoogleIdToken(googleAuth!.idToken!);
     if (backendToken == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google registration failed on server!')),
+        const SnackBar(content: Center(child: Text('Google registration failed on server!'))),
       );
       return;
     }
@@ -60,7 +60,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     // For example: await AuthStorage.saveToken(backendToken);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Registration via Google successful!')),
+      const SnackBar(content: Center(child: Text('Registration via Google successful!'))),
     );
     context.go('/'); // Go to main page or home page
   }
@@ -73,14 +73,14 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       if (previous?.status != RegistrationStatus.success &&
           next.status == RegistrationStatus.success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration successful!')),
+          const SnackBar(content: Center(child: Text('Registration successful!'))),
         );
         // context.go('/personal_info');
         context.go('/');
       }
       if (next.status == RegistrationStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error ?? 'Registration error')),
+          SnackBar(content: Center(child: Text(next.error ?? 'Registration error'))),
         );
       }
     });
