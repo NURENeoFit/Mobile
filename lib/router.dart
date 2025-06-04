@@ -12,22 +12,28 @@ import 'package:neofit_mobile/screens/main/pages/profile/abonnement.dart';
 import 'package:neofit_mobile/screens/main/pages/trainings/exercises.dart';
 import 'package:neofit_mobile/screens/register/register_screen.dart';
 import 'package:neofit_mobile/screens/main/root.dart';
+import 'package:neofit_mobile/utils/auth_storage.dart';
 
+// Main app router configuration with route protection based on the token
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
+    // Login screen route
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginScreen(),
     ),
+    // Registration screen route
     GoRoute(
       path: '/register',
       builder: (context, state) => const RegisterScreen(),
     ),
+    // Main screen (home) route
     GoRoute(
       path: '/',
       builder: (context, state) => const MainScreen(),
     ),
+    // Workout program detail page with required extra data
     GoRoute(
       path: '/program_detail',
       builder: (context, state) {
@@ -37,6 +43,7 @@ final GoRouter appRouter = GoRouter(
         return TrainingDetailPage(workoutProgram: program, trainer: trainer);
       },
     ),
+    // Profile routes (with nested subpages)
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfilePage(),
@@ -64,4 +71,26 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
   ],
+
+  // Route protection: Redirect based on token existence
+  redirect: (context, state) {
+    // Check if there is a saved auth token
+    final hasToken = AuthStorage.token != null && AuthStorage.token!.isNotEmpty;
+
+    // Check if the user is already on the login or register page
+    final loggingIn = state.fullPath == '/login' || state.fullPath == '/register';
+
+    // If user is not authenticated and tries to visit a protected page, redirect to /login
+    if (!hasToken && !loggingIn) {
+      return '/login';
+    }
+
+    // If user is authenticated and tries to access /login or /register, redirect to main page
+    if (hasToken && loggingIn) {
+      return '/';
+    }
+
+    // Otherwise, allow navigation
+    return null;
+  },
 );
