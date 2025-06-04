@@ -49,11 +49,12 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     final state = ref.watch(registrationProvider);
 
     ref.listen(registrationProvider, (previous, next) {
-      if (next.status == RegistrationStatus.success) {
+      if (previous?.status != RegistrationStatus.success &&
+          next.status == RegistrationStatus.success) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registration successful!')),
         );
-        context.go('/'); // or your main screen
+        context.go('/personal_info');
       }
       if (next.status == RegistrationStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(

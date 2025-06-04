@@ -13,7 +13,7 @@ class AuthService {
   }) async {
     try {
       final response = await _dio.post(
-        '/register',
+        '/custom-register',
         data: {
           'username': username,
           'password': password,
@@ -44,7 +44,7 @@ class AuthService {
   }) async {
     try {
       final response = await _dio.post(
-        '/login',
+        '/custom-login',
         data: {
           'username': username,
           'password': password,
