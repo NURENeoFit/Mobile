@@ -80,7 +80,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       }
       if (next.status == RegistrationStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Center(child: Text(next.error ?? 'Registration error'))),
+          SnackBar(content: Center(child: Text('Registration error'))),
         );
       }
     });
@@ -165,11 +165,19 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
           // Sign up button
           SizedBox(
             width: double.infinity,
-            child: state.status == RegistrationStatus.loading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-              onPressed: _onRegisterPressed,
-              child: Text('Sign Up', style: Theme.of(context).textTheme.labelLarge),
+            child: ElevatedButton(
+              onPressed: state.status == RegistrationStatus.loading ? null : _onRegisterPressed,
+              child: state.status == RegistrationStatus.loading
+                  ? SizedBox(
+                height: 20, width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              )
+                  : Text('Sign Up', style: Theme.of(context).textTheme.labelLarge),
             ),
           ),
           const SizedBox(height: 16),

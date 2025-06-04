@@ -73,7 +73,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       }
       if (next.status == LoginStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Center(child: Text(next.error ?? 'Login error'))),
+          SnackBar(content: Center(child: Text('Login error'))),
         );
       }
     });
@@ -120,11 +120,19 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           // Login button
           SizedBox(
             width: double.infinity,
-            child: state.status == LoginStatus.loading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-              onPressed: _onLoginPressed,
-              child: Text('Login', style: Theme.of(context).textTheme.labelLarge),
+            child: ElevatedButton(
+              onPressed: state.status == LoginStatus.loading ? null : _onLoginPressed,
+              child: state.status == LoginStatus.loading
+                  ? SizedBox(
+                height: 20, width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              )
+                  : Text('Login', style: Theme.of(context).textTheme.labelLarge),
             ),
           ),
           const SizedBox(height: 16),
