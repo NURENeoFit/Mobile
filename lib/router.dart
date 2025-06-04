@@ -10,6 +10,7 @@ import 'package:neofit_mobile/screens/main/pages/profile/settings.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/statistics.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/abonnement.dart';
 import 'package:neofit_mobile/screens/main/pages/trainings/exercises.dart';
+import 'package:neofit_mobile/screens/register/complete_profile.dart';
 import 'package:neofit_mobile/screens/register/register_screen.dart';
 import 'package:neofit_mobile/screens/main/root.dart';
 import 'package:neofit_mobile/utils/auth_storage.dart';
@@ -27,6 +28,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/register',
       builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: '/complete_profile',
+      builder: (context, state) => const CompleteProfilePage(),
     ),
     // Main screen (home) route
     GoRoute(
@@ -74,23 +79,14 @@ final GoRouter appRouter = GoRouter(
 
   // Route protection: Redirect based on token existence
   redirect: (context, state) {
-    // Check if there is a saved auth token
     final hasToken = AuthStorage.token != null && AuthStorage.token!.isNotEmpty;
+    final isLogin = state.fullPath == '/login';
+    final isRegister = state.fullPath == '/register';
 
-    // Check if the user is already on the login or register page
-    final loggingIn = state.fullPath == '/login' || state.fullPath == '/register';
-
-    // If user is not authenticated and tries to visit a protected page, redirect to /login
-    if (!hasToken && !loggingIn) {
+    if (!hasToken && !isLogin && !isRegister) {
       return '/login';
     }
 
-    // If user is authenticated and tries to access /login or /register, redirect to main page
-    if (hasToken && loggingIn) {
-      return '/';
-    }
-
-    // Otherwise, allow navigation
     return null;
   },
 );

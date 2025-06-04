@@ -62,7 +62,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Center(child: Text('Registration via Google successful!'))),
     );
-    context.go('/'); // Go to main page or home page
+    context.go('/complete_profile');
   }
 
   @override
@@ -75,8 +75,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Center(child: Text('Registration successful!'))),
         );
-        // context.go('/personal_info');
-        context.go('/');
+        context.go('/complete_profile');
       }
       if (next.status == RegistrationStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(
