@@ -1,30 +1,52 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neofit_mobile/services/auth_service.dart';
+import 'package:neofit_mobile/utils/auth_storage.dart';
 
 class RegisterController {
-  static void register(BuildContext context, String username, String email, String password) {
-      // TODO: Replace this with real API call to backend registration endpoint
-      // Example: await AuthService.register(username, email, password);
-      debugPrint('Register: $username / $email / $password');
+  static final _authService = AuthService();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registered as $username (placeholder)')),
+  static Future<void> register(
+      BuildContext context, String username, String email, String password) async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      // Call backend for registration, save token
+      final token = await _authService.register(
+        username: username,
+        email: email,
+        password: password,
       );
 
-      // TODO: After successful registration, navigate to home or login
-      context.go('/');
+      if (token != null) {
+        await AuthStorage.saveToken(token);
+
+        messenger.showSnackBar(
+          SnackBar(content: Text('Registration successful!')),
+        );
+
+        // Navigate to home or main screen
+        context.go('/');
+      } else {
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Registration failed, try again')),
+        );
+      }
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
   }
 
   static void registerWithGoogle(BuildContext context) {
-    // TODO: Implement Google Sign-In using Firebase Auth or OAuth
-    // Example: await AuthService.signInWithGoogle();
+    // TODO: Implement real Google OAuth registration here
     debugPrint('Google Register Pressed');
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Google register (placeholder)')),
     );
-
-    // TODO: After successful Google registration, navigate to main screen
     // context.go('/');
   }
 }
+*/

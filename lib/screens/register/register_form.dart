@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:neofit_mobile/providers/registration_provider.dart';
 import 'package:neofit_mobile/widgets/or_divider.dart';
-import 'package:neofit_mobile/screens/register/register_controller.dart';
 
-class RegisterForm extends StatefulWidget {
+class RegisterForm extends ConsumerStatefulWidget {
   const RegisterForm({super.key});
 
   @override
-  State<RegisterForm> createState() => _RegisterFormState();
+  ConsumerState<RegisterForm> createState() => _RegisterFormState();
 }
 
-class _RegisterFormState extends State<RegisterForm> {
+class _RegisterFormState extends ConsumerState<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
   final _usernameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
@@ -30,25 +30,44 @@ class _RegisterFormState extends State<RegisterForm> {
 
   void _onRegisterPressed() {
     if (_formKey.currentState!.validate()) {
-      final username = _usernameCtrl.text.trim();
-      final email = _emailCtrl.text.trim();
-      final password = _passwordCtrl.text;
-      RegisterController.register(context, username, email, password);
+      ref.read(registrationProvider.notifier).register(
+        username: _usernameCtrl.text.trim(),
+        email: _emailCtrl.text.trim(),
+        password: _passwordCtrl.text,
+      );
     }
   }
 
   void _onGooglePressed() {
-    RegisterController.registerWithGoogle(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Google register (placeholder)')),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(registrationProvider);
+
+    ref.listen(registrationProvider, (previous, next) {
+      if (next.status == RegistrationStatus.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration successful!')),
+        );
+        context.go('/'); // or your main screen
+      }
+      if (next.status == RegistrationStatus.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error ?? 'Registration error')),
+        );
+      }
+    });
+
     return Form(
       key: _formKey,
       child: Column(
         children: [
           const SizedBox(height: 40),
-          Icon(Icons.person_add, size: 64, color: ColorScheme.of(context).primary),
+          Icon(Icons.person_add, size: 64, color: Theme.of(context).colorScheme.primary),
           const SizedBox(height: 24),
 
           // Username
@@ -123,9 +142,11 @@ class _RegisterFormState extends State<RegisterForm> {
           // Sign up button
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: state.status == RegistrationStatus.loading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
               onPressed: _onRegisterPressed,
-              child: Text('Sign Up', style: TextTheme.of(context).labelLarge),
+              child: Text('Sign Up', style: Theme.of(context).textTheme.labelLarge),
             ),
           ),
           const SizedBox(height: 16),
