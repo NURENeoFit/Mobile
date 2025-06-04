@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neofit_mobile/providers/training_provider.dart';
 import 'package:neofit_mobile/providers/membership_provider.dart';
+import 'package:neofit_mobile/screens/main/pages/home/goal_block.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -19,7 +20,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Trigger refresh when entering page
     Future.microtask(() {
       ref.read(trainingNotifierProvider.notifier).refresh();
       ref.read(membershipNotifierProvider.notifier).refresh();
@@ -51,9 +51,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                 data: (membership) {
                   final endDate = membership?.endDate;
                   final displayDate = endDate != null ? _formatDate(endDate) : '—';
-
                   return Material(
-                    color: ColorScheme.of(context).secondary,
+                    color: Theme.of(context).colorScheme.secondary,
                     borderRadius: BorderRadius.circular(12),
                     child: InkWell(
                       splashColor: Colors.transparent,
@@ -66,11 +65,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                           children: [
                             Text(
                               'Membership active\nuntil $displayDate',
-                              style: TextTheme.of(context).bodyLarge?.copyWith(
-                                color: ColorScheme.of(context).onSecondary,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
-                            Icon(Icons.chevron_right, color: ColorScheme.of(context).onSecondary),
+                            Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSecondary),
                           ],
                         ),
                       ),
@@ -80,48 +79,21 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               const SizedBox(height: 16),
 
-              // Goal
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: ColorScheme.of(context).surface,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('🎯 Goal', style: TextTheme.of(context).bodyLarge),
-                    const SizedBox(height: 4),
-                    Text('Weight loss', style: TextTheme.of(context).titleMedium),
-                    const SizedBox(height: 12),
-                    LinearProgressIndicator(
-                      value: 0.5,
-                      backgroundColor: ColorScheme.of(context).onSurface.withAlpha(25),
-                      color: Colors.blue,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '5 kg left',
-                      style: TextTheme.of(context).bodyMedium?.copyWith(
-                        color: ColorScheme.of(context).onSurface.withAlpha(100),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Goal Block
+              const GoalBlock(),
               const SizedBox(height: 16),
 
               // Calendar block + plans
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: ColorScheme.of(context).surface,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Your Schedule', style: TextTheme.of(context).titleMedium),
+                    Text('Your Schedule', style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 12),
                     TableCalendar(
                       calendarFormat: CalendarFormat.week,
@@ -144,11 +116,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ),
                       calendarStyle: CalendarStyle(
                         todayDecoration: BoxDecoration(
-                          color: ColorScheme.of(context).primary,
+                          color: Theme.of(context).colorScheme.primary,
                           shape: BoxShape.circle,
                         ),
                         selectedDecoration: BoxDecoration(
-                          color: ColorScheme.of(context).tertiary,
+                          color: Theme.of(context).colorScheme.tertiary,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -156,7 +128,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     const SizedBox(height: 16),
                     Text(
                       'Plans for ${selected.toLocal().toString().split(' ')[0]}',
-                      style: TextTheme.of(context).bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     ...plans.map((training) {
@@ -164,12 +136,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                         margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: ColorScheme.of(context).surfaceContainer,
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.fitness_center, color: ColorScheme.of(context).primary),
+                            Icon(Icons.fitness_center, color: Theme.of(context).colorScheme.primary),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Column(
@@ -177,13 +149,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 children: [
                                   Text(
                                     '${training.specializationName} with ${training.fullNameTrainer}',
-                                    style: TextTheme.of(context).bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     '${training.startTime} • ${training.isGroup ? 'Group' : 'Individual'}',
-                                    style: TextTheme.of(context).bodyMedium?.copyWith(
-                                      color: ColorScheme.of(context).onSurface.withAlpha(100),
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                                     ),
                                   ),
                                 ],
@@ -196,8 +168,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                     if (plans.isEmpty)
                       Text(
                         'No plans for this date.',
-                        style: TextTheme.of(context).bodyMedium?.copyWith(
-                          color: ColorScheme.of(context).onSurface.withAlpha(100),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                         ),
                       ),
                   ],
