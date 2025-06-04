@@ -54,7 +54,8 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registration successful!')),
         );
-        context.go('/personal_info');
+        // context.go('/personal_info');
+        context.go('/');
       }
       if (next.status == RegistrationStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(
