@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:neofit_mobile/utils/auth_storage.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -56,7 +57,17 @@ class _ProfilePageState extends State<ProfilePage> {
           context,
           Icons.logout,
           'Logout',
-          onTap: () {
+          onTap: () async {
+            // Remove token (and optionally clear all settings)
+            await AuthStorage.removeToken();
+            await AuthStorage.clearAll();
+
+            // Show confirmation (optional)
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('You have logged out.')),
+            );
+
+            // Navigate to login and clear navigation stack
             context.go('/login');
           },
         ),
