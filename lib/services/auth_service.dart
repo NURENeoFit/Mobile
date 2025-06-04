@@ -10,7 +10,6 @@ class AuthService {
     required String username,
     required String password,
     required String email,
-    // add other fields if needed
   }) async {
     try {
       final response = await _dio.post(
@@ -19,19 +18,20 @@ class AuthService {
           'username': username,
           'password': password,
           'email': email,
-          // add other fields here
         },
       );
-      // Assume API returns { "token": "..." }
-      if (response.statusCode == 200 && response.data['token'] != null) {
-        final token = response.data['token'] as String;
+      // JSON-server-auth returns { "accessToken": "..." }
+      if ((response.statusCode == 200 || response.statusCode == 201) &&
+          response.data['accessToken'] != null) {
+        final token = response.data['accessToken'] as String;
         await AuthStorage.saveToken(token);
         return token;
       } else {
+        // Server error, show readable error
         throw Exception("Registration error: ${response.data}");
       }
     } on DioException catch (e) {
-      throw Exception("Network error: ${e.message}");
+      throw Exception("Network error: ${e.response?.data ?? e.message}");
     } catch (e) {
       throw Exception("Registration failed: $e");
     }
@@ -50,16 +50,17 @@ class AuthService {
           'password': password,
         },
       );
-      // Assume API returns { "token": "..." }
-      if (response.statusCode == 200 && response.data['token'] != null) {
-        final token = response.data['token'] as String;
+      // JSON-server-auth returns { "accessToken": "..." }
+      if ((response.statusCode == 200 || response.statusCode == 201) &&
+          response.data['accessToken'] != null) {
+        final token = response.data['accessToken'] as String;
         await AuthStorage.saveToken(token);
         return token;
       } else {
         throw Exception("Login error: ${response.data}");
       }
     } on DioException catch (e) {
-      throw Exception("Network error: ${e.message}");
+      throw Exception("Network error: ${e.response?.data ?? e.message}");
     } catch (e) {
       throw Exception("Login failed: $e");
     }
