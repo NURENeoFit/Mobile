@@ -1,4 +1,4 @@
-import 'package:neofit_mobile/models/workout_program.dart';
+import 'package:neofit_mobile/models/trainings/workout_program.dart';
 
 class Trainer {
   final int trainerId;
@@ -22,14 +22,14 @@ class Trainer {
   });
 
   factory Trainer.fromJson(Map<String, dynamic> json) => Trainer(
-    trainerId: json['trainerId'],
-    trainerFirstName: json['trainerFirstName'],
-    trainerLastName: json['trainerLastName'],
-    trainerPhone: json['trainerPhone'],
-    trainerExperience: json['trainerExperience'],
-    trainerEmail: json['trainerEmail'],
-    trainerUsername: json['trainerUsername'],
-    workoutPrograms: (json['workoutPrograms'] as List<dynamic>)
+    trainerId: json['trainer_id'],
+    trainerFirstName: json['trainer_first_name'],
+    trainerLastName: json['trainer_last_name'],
+    trainerPhone: json['trainer_phone'],
+    trainerExperience: json['trainer_experience'],
+    trainerEmail: json['trainer_email'],
+    trainerUsername: json['trainer_username'],
+    workoutPrograms: (json['workout_programs'] as List<dynamic>)
         .map((e) => WorkoutProgram.fromJson(e as Map<String, dynamic>))
         .toList(),
   );

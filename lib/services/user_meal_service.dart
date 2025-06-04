@@ -8,55 +8,6 @@ class UserMealService {
   final Dio _dio = DioClient.instance;
 
   Future<List<UserMeal>> fetchMealsForUser() async {
-    /*
-    // removeMealsFromCache();
-
-    final prefs = await SharedPreferences.getInstance();
-    final cached = prefs.getString('user_meals');
-    final savedAtRaw = prefs.getString('user_meals_saved_at');
-
-    // Check expiration
-    if (cached != null && savedAtRaw != null) {
-      final savedAt = DateTime.tryParse(savedAtRaw);
-      final now = DateTime.now();
-
-      if (savedAt != null && now.difference(savedAt).inDays >= 1) {
-        await prefs.remove('user_meals');
-        await prefs.remove('user_meals_saved_at');
-      }
-    }
-
-    // Try again after potential deletion
-    final refreshedCache = prefs.getString('user_meals');
-
-    if (refreshedCache != null) {
-      final List<dynamic> decoded = jsonDecode(refreshedCache);
-      return decoded.map((e) => UserMeal.fromJson(e)).toList();
-    }
-
-    // Use test data on first run
-    final testMeals = [
-      UserMeal(
-        type: MealType.breakfast,
-        calories: 0,
-        createdTime: DateTime.now().subtract(const Duration(hours: 5)),
-      ),
-      UserMeal(
-        type: MealType.lunch,
-        calories: 0,
-        createdTime: DateTime.now().subtract(const Duration(hours: 3)),
-      ),
-      UserMeal(
-        type: MealType.dinner,
-        calories: 0,
-        createdTime: DateTime.now().subtract(const Duration(hours: 1)),
-      ),
-    ];
-
-    await saveMeals(testMeals);
-    return testMeals;
-    */
-
     try {
       final response = await _dio.get('/userMeals');
 

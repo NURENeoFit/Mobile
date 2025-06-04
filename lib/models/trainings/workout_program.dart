@@ -1,21 +1,19 @@
-import 'package:neofit_mobile/models/exercise.dart';
+import 'package:neofit_mobile/models/trainings/exercise.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutProgram {
-  final int id;
+  final int workoutProgramId;
   final String name;
   final int trainerId;
-  final int goalId;
   final int duration;
   final String programType;
   final List<Exercise> exercises;
   final String icon;
 
   WorkoutProgram({
-    required this.id,
+    required this.workoutProgramId,
     required this.name,
     required this.trainerId,
-    required this.goalId,
     required this.duration,
     required this.programType,
     required this.exercises,
@@ -23,12 +21,11 @@ class WorkoutProgram {
   });
 
   factory WorkoutProgram.fromJson(Map<String, dynamic> json) => WorkoutProgram(
-    id: json['id'],
-    name: json['name'],
-    trainerId: json['trainerId'],
-    goalId: json['goalId'],
+    workoutProgramId: json['workout_training_id'],
+    name: json['program_name'],
+    trainerId: json['trainer_id'],
     duration: json['duration'],
-    programType: json['programType'],
+    programType: json['program_type'],
     exercises: (json['exercises'] as List<dynamic>)
         .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
         .toList(),
@@ -36,10 +33,9 @@ class WorkoutProgram {
   );
 
   Map<String, dynamic> toJson() => {
-    'id': id,
+    'id': workoutProgramId,
     'name': name,
     'trainerId': trainerId,
-    'goalId': goalId,
     'duration': duration,
     'programType': programType,
     'exercises': exercises.map((e) => e.toJson()).toList(),

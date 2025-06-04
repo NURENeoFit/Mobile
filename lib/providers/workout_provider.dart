@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:neofit_mobile/models/trainer.dart';
+import 'package:neofit_mobile/models/trainings/trainer.dart';
 import 'package:neofit_mobile/services/workout_service.dart';
 
 final trainerNotifierProvider = AsyncNotifierProvider<TrainerNotifier, List<Trainer>>(

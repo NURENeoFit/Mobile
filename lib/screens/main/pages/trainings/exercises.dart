@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // добавь импорт Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:neofit_mobile/models/trainer.dart';
-import 'package:neofit_mobile/models/workout_program.dart';
-import 'package:neofit_mobile/providers/workout_provider.dart'; // провайдер тренеров
+import 'package:neofit_mobile/models/trainings/trainer.dart';
+import 'package:neofit_mobile/models/trainings/workout_program.dart';
+import 'package:neofit_mobile/providers/workout_provider.dart';
 
 class TrainingDetailPage extends ConsumerStatefulWidget {
   final WorkoutProgram workoutProgram;
@@ -35,7 +35,7 @@ class _TrainingDetailPageState extends ConsumerState<TrainingDetailPage> {
     final prefs = await SharedPreferences.getInstance();
     final favoritesJson = prefs.getStringList('favorite_workouts') ?? [];
     setState(() {
-      isFavorite = favoritesJson.contains(widget.workoutProgram.id.toString());
+      isFavorite = favoritesJson.contains(widget.workoutProgram.workoutProgramId.toString());
     });
   }
 
@@ -44,10 +44,10 @@ class _TrainingDetailPageState extends ConsumerState<TrainingDetailPage> {
     final favoritesJson = prefs.getStringList('favorite_workouts') ?? [];
     setState(() {
       if (isFavorite) {
-        favoritesJson.remove(widget.workoutProgram.id.toString());
+        favoritesJson.remove(widget.workoutProgram.workoutProgramId.toString());
         isFavorite = false;
       } else {
-        favoritesJson.add(widget.workoutProgram.id.toString());
+        favoritesJson.add(widget.workoutProgram.workoutProgramId.toString());
         isFavorite = true;
       }
     });

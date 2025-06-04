@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:neofit_mobile/models/trainer.dart';
-import 'package:neofit_mobile/models/workout_program.dart';
+import 'package:neofit_mobile/models/trainings/trainer.dart';
+import 'package:neofit_mobile/models/trainings/workout_program.dart';
 
 import 'package:neofit_mobile/screens/login/login_screen.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/profile.dart';

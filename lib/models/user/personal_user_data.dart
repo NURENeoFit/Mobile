@@ -4,8 +4,6 @@ enum Gender { male, female }
 enum ActivityLevel { low, medium, high }
 
 class PersonalUserData {
-  final int personalUserDataId;
-  final int userId;
   final ProgramGoal goal;
   final double weightKg;
   final double heightCm;
@@ -14,8 +12,6 @@ class PersonalUserData {
   final ActivityLevel activityLevel;
 
   PersonalUserData({
-    required this.personalUserDataId,
-    required this.userId,
     required this.goal,
     required this.weightKg,
     required this.heightCm,
@@ -25,8 +21,6 @@ class PersonalUserData {
   });
 
   factory PersonalUserData.fromJson(Map<String, dynamic> json) => PersonalUserData(
-    personalUserDataId: json['personal_user_data_id'],
-    userId: json['user_id'],
     goal: ProgramGoal.fromJson(json['goal']),
     weightKg: (json['weight_kg'] as num).toDouble(),
     heightCm: (json['height_cm'] as num).toDouble(),
@@ -36,8 +30,6 @@ class PersonalUserData {
   );
 
   Map<String, dynamic> toJson() => {
-    'personal_user_data_id': personalUserDataId,
-    'user_id': userId,
     'goal': goal.toJson(),
     'weight_kg': weightKg,
     'height_cm': heightCm,

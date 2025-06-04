@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
-import 'package:neofit_mobile/models/trainer.dart';
-import 'package:neofit_mobile/models/workout_program.dart';
+import 'package:neofit_mobile/models/trainings/trainer.dart';
+import 'package:neofit_mobile/models/trainings/workout_program.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neofit_mobile/providers/workout_provider.dart';
 
@@ -36,7 +36,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     List<WorkoutProgram> favPrograms = [];
     for (final trainer in trainers) {
       for (final program in trainer.workoutPrograms) {
-        if (favIds.contains(program.id.toString())) {
+        if (favIds.contains(program.workoutProgramId.toString())) {
           favPrograms.add(program);
         }
       }
