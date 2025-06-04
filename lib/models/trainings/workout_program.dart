@@ -33,11 +33,11 @@ class WorkoutProgram {
   );
 
   Map<String, dynamic> toJson() => {
-    'id': workoutProgramId,
-    'name': name,
-    'trainerId': trainerId,
+    'workout_training_id': workoutProgramId,
+    'program_name': name,
+    'trainer_id': trainerId,
     'duration': duration,
-    'programType': programType,
+    'program_type': programType,
     'exercises': exercises.map((e) => e.toJson()).toList(),
     'icon': icon,
   };

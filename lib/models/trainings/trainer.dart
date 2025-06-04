@@ -35,13 +35,13 @@ class Trainer {
   );
 
   Map<String, dynamic> toJson() => {
-    'trainerId': trainerId,
-    'trainerFirstName': trainerFirstName,
-    'trainerLastName': trainerLastName,
-    'trainerPhone': trainerPhone,
-    'trainerExperience': trainerExperience,
-    'trainerEmail': trainerEmail,
-    'trainerUsername': trainerUsername,
-    'workoutPrograms': workoutPrograms.map((wp) => wp.toJson()).toList(),
+    'trainer_id': trainerId,
+    'trainer_first_name': trainerFirstName,
+    'trainer_last_name': trainerLastName,
+    'trainer_phone': trainerPhone,
+    'trainer_experience': trainerExperience,
+    'trainer_email': trainerEmail,
+    'trainer_username': trainerUsername,
+    'workout_programs': workoutPrograms.map((wp) => wp.toJson()).toList(),
   };
 }

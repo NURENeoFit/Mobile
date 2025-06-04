@@ -12,11 +12,11 @@ class FullUserProfile {
 
   factory FullUserProfile.fromJson(Map<String, dynamic> json) => FullUserProfile(
     user: User.fromJson(json['user']),
-    personalData: PersonalUserData.fromJson(json['personalData']),
+    personalData: PersonalUserData.fromJson(json['personal_data']),
   );
 
   Map<String, dynamic> toJson() => {
     'user': user.toJson(),
-    'personalData': personalData.toJson(),
+    'personal_data': personalData.toJson(),
   };
 }

@@ -19,9 +19,9 @@ class Exercise {
   );
 
   Map<String, dynamic> toJson() => {
-    'id': exerciseId,
+    'exercise_id': exerciseId,
     'name': name,
     'duration': duration,
-    'burnedCalories': burnedCalories,
+    'burned_calories': burnedCalories,
   };
 }
