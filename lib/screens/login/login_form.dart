@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neofit_mobile/providers/login_provider.dart';
+import 'package:neofit_mobile/services/backend_auth_service.dart';
+import 'package:neofit_mobile/services/google_auth_service.dart';
 import 'package:neofit_mobile/widgets/or_divider.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
@@ -33,10 +35,29 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     }
   }
 
-  void _onGooglePressed() {
+  void _onGooglePressed() async {
+    final googleAuth = await GoogleAuthService().signIn();
+    if (googleAuth?.idToken == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google sign-in failed!')),
+      );
+      return;
+    }
+    final backendToken = await BackendAuthService().signInWithGoogleIdToken(googleAuth!.idToken!);
+    if (backendToken == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google login failed on server!')),
+      );
+      return;
+    }
+
+    // Optionally save backendToken to secure storage!
+    // await AuthStorage.saveToken(backendToken);
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Google login (placeholder)')),
+      const SnackBar(content: Text('Login via Google successful!')),
     );
+    context.go('/'); // Go to main page or home page
   }
 
   @override

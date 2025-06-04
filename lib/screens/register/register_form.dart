@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neofit_mobile/providers/registration_provider.dart';
+import 'package:neofit_mobile/services/backend_auth_service.dart';
+import 'package:neofit_mobile/services/google_auth_service.dart';
 import 'package:neofit_mobile/widgets/or_divider.dart';
 
 class RegisterForm extends ConsumerStatefulWidget {
@@ -38,10 +40,29 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     }
   }
 
-  void _onGooglePressed() {
+  void _onGooglePressed() async {
+    final googleAuth = await GoogleAuthService().signIn();
+    if (googleAuth?.idToken == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google sign-in failed!')),
+      );
+      return;
+    }
+    final backendToken = await BackendAuthService().signInWithGoogleIdToken(googleAuth!.idToken!);
+    if (backendToken == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google registration failed on server!')),
+      );
+      return;
+    }
+
+    // Optionally save backendToken to secure storage!
+    // For example: await AuthStorage.saveToken(backendToken);
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Google register (placeholder)')),
+      const SnackBar(content: Text('Registration via Google successful!')),
     );
+    context.go('/'); // Go to main page or home page
   }
 
   @override
