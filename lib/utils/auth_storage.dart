@@ -26,4 +26,10 @@ class AuthStorage {
     await prefs.remove(_tokenKey);
     _token = null;
   }
+
+  static Future<void> clearAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    _token = null;
+  }
 }
