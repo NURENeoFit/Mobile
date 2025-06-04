@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:neofit_mobile/services/auth_storage.dart';
+import 'package:neofit_mobile/utils/auth_storage.dart';
 
 class DioClient {
   static final Dio _dio = Dio(BaseOptions(
