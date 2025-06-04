@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:neofit_mobile/providers/login_provider.dart';
 import 'package:neofit_mobile/widgets/or_divider.dart';
-import 'package:neofit_mobile/screens/login/login_controller.dart';
 
-class LoginForm extends StatefulWidget {
+class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  ConsumerState<LoginForm> createState() => _LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _LoginFormState extends ConsumerState<LoginForm> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -26,27 +26,46 @@ class _LoginFormState extends State<LoginForm> {
 
   void _onLoginPressed() {
     if (_formKey.currentState!.validate()) {
-      final username = _usernameController.text.trim();
-      final password = _passwordController.text.trim();
-      LoginController.loginWithUsername(context, username, password);
+      ref.read(loginProvider.notifier).login(
+        username: _usernameController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
     }
   }
 
   void _onGooglePressed() {
-    LoginController.loginWithGoogle(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Google login (placeholder)')),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(loginProvider);
+
+    ref.listen(loginProvider, (previous, next) {
+      if (next.status == LoginStatus.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login successful!')),
+        );
+        context.go('/'); // Go to main screen
+      }
+      if (next.status == LoginStatus.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error ?? 'Login error')),
+        );
+      }
+    });
+
     return Form(
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 60),
-          Icon(Icons.lock, size: 64, color: ColorScheme.of(context).primary),
+          Icon(Icons.lock, size: 64, color: Theme.of(context).colorScheme.primary),
           const SizedBox(height: 24),
-
+          // Username
           TextFormField(
             controller: _usernameController,
             decoration: const InputDecoration(
@@ -58,7 +77,7 @@ class _LoginFormState extends State<LoginForm> {
             value == null || value.isEmpty ? 'Enter your username' : null,
           ),
           const SizedBox(height: 16),
-
+          // Password
           TextFormField(
             controller: _passwordController,
             obscureText: _obscure,
@@ -66,9 +85,7 @@ class _LoginFormState extends State<LoginForm> {
               labelText: 'Password',
               prefixIcon: const Icon(Icons.lock),
               suffixIcon: IconButton(
-                icon: Icon(
-                  _obscure ? Icons.visibility : Icons.visibility_off,
-                ),
+                icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
                 onPressed: () {
                   setState(() => _obscure = !_obscure);
                 },
@@ -79,18 +96,19 @@ class _LoginFormState extends State<LoginForm> {
             value == null || value.isEmpty ? 'Enter your password' : null,
           ),
           const SizedBox(height: 24),
-
+          // Login button
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: state.status == LoginStatus.loading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
               onPressed: _onLoginPressed,
-              child: Text('Login', style: TextTheme.of(context).labelLarge),
+              child: Text('Login', style: Theme.of(context).textTheme.labelLarge),
             ),
           ),
           const SizedBox(height: 16),
           const CustomDivider(),
           const SizedBox(height: 16),
-
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -100,12 +118,8 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 24),
-
           TextButton(
-            onPressed: () {
-              debugPrint('Go to register screen (placeholder)');
-              context.go("/register");
-            },
+            onPressed: () => context.go("/register"),
             child: const Text("Don't have an account? Sign up"),
           ),
         ],
