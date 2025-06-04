@@ -19,25 +19,19 @@ class UserMealNotifier extends AsyncNotifier<List<UserMeal>> {
     state = AsyncData(data);
   }
 
-  Future<void> updateMealCalories(MealType type, int caloriesToAdd) async {
-    final currentMeals = <UserMeal>[...(state.value ?? [])];
-
-    final index = currentMeals.indexWhere((meal) => meal.type == type);
-
-    if (index != -1) {
-      final updatedMeal = currentMeals[index].copyWith(
-        calories: currentMeals[index].calories + caloriesToAdd,
-      );
-      currentMeals[index] = updatedMeal;
-    } else {
-      currentMeals.add(UserMeal(
-        type: type,
-        calories: caloriesToAdd,
-        createdTime: DateTime.now(),
-      ));
+  Future<void> updateMealCalories(
+      MealType type,
+      int caloriesToAdd, {
+        DateTime? date,
+      }) async {
+    final today = date ?? DateTime.now();
+    final updatedMeal = await UserMealService().upsertMealCalories(
+      type: type,
+      caloriesToAdd: caloriesToAdd,
+      date: today,
+    );
+    if (updatedMeal != null) {
+      await refresh();
     }
-
-    await UserMealService().saveMeals(currentMeals);
-    state = AsyncData(currentMeals);
   }
 }

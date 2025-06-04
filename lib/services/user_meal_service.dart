@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:neofit_mobile/services/dio_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neofit_mobile/models/user_meal.dart';
 
 class UserMealService {
@@ -10,37 +8,70 @@ class UserMealService {
   Future<List<UserMeal>> fetchMealsForUser() async {
     try {
       final response = await _dio.get('/userMeals');
-
       if (response.statusCode == 200 && response.data is List) {
-        final meals = (response.data as List)
+        return (response.data as List)
             .map((e) => UserMeal.fromJson(e))
             .toList();
-
-        await saveMeals(meals);
-
-        return meals;
       }
     } catch (e) {
       print('Error fetching meals: $e');
     }
-
     return [];
   }
 
-  Future<void> saveMeals(List<UserMeal> meals) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final encoded = jsonEncode(meals.map((m) => m.toJson()).toList());
-    await prefs.setString('user_meals', encoded);
-
-    // Save the current timestamp
-    await prefs.setString('user_meals_saved_at', DateTime.now().toIso8601String());
+  Future<UserMeal?> getMealByTypeAndDate(MealType type, DateTime date) async {
+    try {
+      final response = await _dio.get('/userMeals', queryParameters: {
+        'type': type.name,
+        'created_time': date.toIso8601String().substring(0, 10), // 'YYYY-MM-DD'
+      });
+      if (response.statusCode == 200 &&
+          response.data is List &&
+          (response.data as List).isNotEmpty) {
+        return UserMeal.fromJson(response.data[0]);
+      }
+    } catch (e) {
+      print('Error searching meal: $e');
+    }
+    return null;
   }
 
-  Future<void> removeMealsFromCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_meals');
-    await prefs.remove('user_meals_saved_at');
-  }
+  Future<UserMeal?> upsertMealCalories({
+    required MealType type,
+    required int caloriesToAdd,
+    required DateTime date,
+  }) async {
+    final existingMeal = await getMealByTypeAndDate(type, date);
 
+    if (existingMeal != null) {
+      // Update existing meal
+      final updatedCalories = existingMeal.calories + caloriesToAdd;
+      try {
+        final response = await _dio.patch(
+          '/userMeals/${existingMeal.id}', // use "id" as property name
+          data: {'calories': updatedCalories},
+        );
+        if (response.statusCode == 200) {
+          return UserMeal.fromJson(response.data);
+        }
+      } catch (e) {
+        print('Error updating meal: $e');
+      }
+    } else {
+      // Create new meal
+      try {
+        final response = await _dio.post('/userMeals', data: {
+          'type': type.name,
+          'calories': caloriesToAdd,
+          'created_time': date.toIso8601String().substring(0, 10),
+        });
+        if (response.statusCode == 201) {
+          return UserMeal.fromJson(response.data);
+        }
+      } catch (e) {
+        print('Error creating meal: $e');
+      }
+    }
+    return null;
+  }
 }

@@ -22,7 +22,6 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
   @override
   void initState() {
     super.initState();
-    // Trigger refresh when entering page
     Future.microtask(() {
       ref.read(userMealNotifierProvider.notifier).refresh();
     });
@@ -63,14 +62,17 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
                 controller: _breakfastController,
                 input: _breakfastInput,
                 total: (meals.firstWhere(
-                      (meal) => meal.type == MealType.breakfast,
+                      (meal) => meal.type == MealType.breakfast && isToday(meal.createdTime),
                   orElse: () => UserMeal(
-                      type: MealType.breakfast,
-                      calories: 0,
-                      createdTime: DateTime.now()),
+                    id: null,
+                    type: MealType.breakfast,
+                    calories: 0,
+                    createdTime: DateTime.now(),
+                  ),
                 ).calories) + _breakfastInput,
-                onAdd: () {
-                  ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.breakfast, _breakfastInput);
+                onAdd: () async {
+                  await ref.read(userMealNotifierProvider.notifier)
+                      .updateMealCalories(MealType.breakfast, _breakfastInput);
                   _breakfastController.clear();
                 },
               ),
@@ -79,14 +81,17 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
                 controller: _lunchController,
                 input: _lunchInput,
                 total: (meals.firstWhere(
-                      (meal) => meal.type == MealType.lunch,
+                      (meal) => meal.type == MealType.lunch && isToday(meal.createdTime),
                   orElse: () => UserMeal(
-                      type: MealType.lunch,
-                      calories: 0,
-                      createdTime: DateTime.now()),
+                    id: null,
+                    type: MealType.lunch,
+                    calories: 0,
+                    createdTime: DateTime.now(),
+                  ),
                 ).calories) + _lunchInput,
-                onAdd: () {
-                  ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.lunch, _lunchInput);
+                onAdd: () async {
+                  await ref.read(userMealNotifierProvider.notifier)
+                      .updateMealCalories(MealType.lunch, _lunchInput);
                   _lunchController.clear();
                 },
               ),
@@ -95,14 +100,17 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
                 controller: _dinnerController,
                 input: _dinnerInput,
                 total: (meals.firstWhere(
-                      (meal) => meal.type == MealType.dinner,
+                      (meal) => meal.type == MealType.dinner && isToday(meal.createdTime),
                   orElse: () => UserMeal(
-                      type: MealType.dinner,
-                      calories: 0,
-                      createdTime: DateTime.now()),
+                    id: null,
+                    type: MealType.dinner,
+                    calories: 0,
+                    createdTime: DateTime.now(),
+                  ),
                 ).calories) + _dinnerInput,
-                onAdd: () {
-                  ref.read(userMealNotifierProvider.notifier).updateMealCalories(MealType.dinner, _dinnerInput);
+                onAdd: () async {
+                  await ref.read(userMealNotifierProvider.notifier)
+                      .updateMealCalories(MealType.dinner, _dinnerInput);
                   _dinnerController.clear();
                 },
               ),
@@ -111,11 +119,13 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                  color: Theme.of(context).colorScheme.primary.withAlpha(20),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Total calories: ${meals.fold<int>(0, (sum, meal) => sum + meal.calories) + _breakfastInput + _lunchInput + _dinnerInput}',
+                  'Total calories: ${(meals.where((m) => isToday(m.createdTime)).fold<int>(
+                    0, (sum, meal) => sum + meal.calories,
+                  ) + _breakfastInput + _lunchInput + _dinnerInput)}',
                   style: Theme.of(context).textTheme.titleMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -138,7 +148,7 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
   }) {
     String? errorText;
     final isInvalidInput = controller.text.isNotEmpty && input <= 0;
-    final willExceed = input > 0 && (total + input) > 30000;
+    final willExceed = input > 0 && (total) > 30000;
 
     if (isInvalidInput) {
       errorText = 'Enter a valid number';
@@ -150,10 +160,14 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: ColorScheme.of(context).surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(color: ColorScheme.of(context).shadow, blurRadius: 4, offset: Offset(0, 2)),
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -161,8 +175,8 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
         children: [
           Text(
             title,
-            style: TextTheme.of(context).titleMedium?.copyWith(
-              color: ColorScheme.of(context).primary,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
           const SizedBox(height: 12),
@@ -184,15 +198,18 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: (input > 0 && (total + input) <= 30000) ? onAdd : null,
+              onPressed: (input > 0 && !willExceed) ? onAdd : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorScheme.of(context).primary,
-                foregroundColor: ColorScheme.of(context).onPrimary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: Text('Add', style: TextTheme.of(context).labelMedium?.copyWith(
-                  color: ColorScheme.of(context).onPrimary
-              )),
+              child: Text(
+                'Add',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 6),
@@ -200,7 +217,7 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
             alignment: Alignment.centerRight,
             child: Text(
               'Total: $total',
-              style: TextTheme.of(context).bodyLarge?.copyWith(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -208,5 +225,12 @@ class _CaloriesPageState extends ConsumerState<CaloriesPage> {
         ],
       ),
     );
+  }
+
+  bool isToday(DateTime date) {
+    final now = DateTime.now();
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 }
