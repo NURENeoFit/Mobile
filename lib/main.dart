@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neofit_mobile/design/theme.dart';
 import 'package:neofit_mobile/router.dart';
+import 'package:neofit_mobile/utils/auth_storage.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AuthStorage.loadToken();
+
   runApp(
     const ProviderScope(
       child: MyApp(),
