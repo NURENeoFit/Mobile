@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -43,36 +42,6 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         padding: const EdgeInsets.all(12),
         children: [
-          _buildTile(
-            context,
-            Icons.person,
-            'Edit Profile',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit Profile tapped')),
-              );
-            },
-          ),
-          _buildTile(
-            context,
-            Icons.flag,
-            'Edit Goal',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit Goal tapped')),
-              );
-            },
-          ),
-          _buildTile(
-            context,
-            Icons.lock,
-            'Change Password',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Change Password tapped')),
-              );
-            },
-          ),
           _buildSwitchTile(
             context,
             Icons.notifications,
@@ -84,31 +53,6 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTile(BuildContext context, IconData icon, String title,
-      {String? subtitle, VoidCallback? onTap}) {
-    return Card(
-      elevation: 1.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      color: Theme.of(context).colorScheme.surface,
-      child: ListTile(
-        splashColor: Colors.transparent,
-        leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        subtitle: subtitle != null
-            ? Text(subtitle, style: Theme.of(context).textTheme.bodySmall)
-            : null,
-        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: onTap,
       ),
     );
   }
