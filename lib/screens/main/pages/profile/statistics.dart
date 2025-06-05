@@ -26,7 +26,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
 
   void _shareResult(List<UserTargetCalculation> data) {
     if (data.isEmpty) return;
-    final latest = data.last;
+    final latest = data.first;
     final message = '📊 My Progress:\n\n'
         'Target date: ${latest.calculatedTargetDate.toIso8601String().split('T').first}\n'
         'Weight: ${latest.calculatedWeight} kg\n'
@@ -66,15 +66,19 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
             );
           }
 
-          final List<UserTargetCalculation> weightData = data..sort((a, b) => a.calculatedTargetDate.compareTo(b.calculatedTargetDate));
-          final spots = weightData
+          final List<UserTargetCalculation> weightData = [...data]
+            ..sort((a, b) => b.calculatedTargetDate.compareTo(a.calculatedTargetDate));
+
+          final List<UserTargetCalculation> weightDataOldestFirst = [...weightData].reversed.toList();
+
+          final spots = weightDataOldestFirst
               .asMap()
               .entries
               .map((e) => FlSpot(e.key.toDouble(), e.value.calculatedWeight))
               .toList();
 
           final double currentCalories = weightData.isNotEmpty
-              ? weightData.last.calculatedNormalCalories.toDouble()
+              ? weightData.first.calculatedNormalCalories.toDouble()
               : 0;
           final double dailyTargetCalories = weightData.isNotEmpty
               ? weightData.map((e) => e.calculatedNormalCalories).reduce((a, b) => a > b ? a : b).toDouble()
@@ -93,18 +97,18 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                         children: [
                           if (weightData.isNotEmpty)
                             Text(
-                              "You're on track to reach ${weightData.last.calculatedWeight} kg",
+                              "You're on track to reach ${weightData.first.calculatedWeight} kg",
                               style: textTheme.titleSmall,
                               textAlign: TextAlign.center,
                             ),
                           const SizedBox(height: 20),
                           SizedBox(
                             height: 220,
-                            width: weightData.length * 70,
+                            width: weightDataOldestFirst.length * 70,
                             child: LineChart(
                               LineChartData(
-                                minY: weightData.map((e) => e.calculatedWeight).reduce((a, b) => a < b ? a : b) - 1,
-                                maxY: weightData.map((e) => e.calculatedWeight).reduce((a, b) => a > b ? a : b) + 1,
+                                minY: weightDataOldestFirst.map((e) => e.calculatedWeight).reduce((a, b) => a < b ? a : b) - 1,
+                                maxY: weightDataOldestFirst.map((e) => e.calculatedWeight).reduce((a, b) => a > b ? a : b) + 1,
                                 gridData: FlGridData(show: true),
                                 borderData: FlBorderData(show: true),
                                 lineTouchData: LineTouchData(
@@ -148,8 +152,8 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                                       interval: 1,
                                       getTitlesWidget: (value, _) {
                                         final index = value.toInt();
-                                        if (index < weightData.length) {
-                                          final date = weightData[index].calculatedTargetDate;
+                                        if (index < weightDataOldestFirst.length) {
+                                          final date = weightDataOldestFirst[index].calculatedTargetDate;
                                           return Padding(
                                             padding: const EdgeInsets.only(top: 8),
                                             child: Text(
