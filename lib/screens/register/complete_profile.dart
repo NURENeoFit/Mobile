@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neofit_mobile/models/user/program_goal.dart';
 import 'package:neofit_mobile/models/user/personal_user_data.dart';
+import 'package:neofit_mobile/models/user_target_calculation.dart';
 import 'package:neofit_mobile/providers/user/user_profile_provider.dart';
+import 'package:neofit_mobile/providers/user/user_target_calculation_provider.dart';
 
 class CompleteProfilePage extends ConsumerStatefulWidget {
   const CompleteProfilePage({super.key});
@@ -20,11 +22,15 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
   final _phoneController = TextEditingController();
   final _weightController = TextEditingController();
   final _heightController = TextEditingController();
+  final _targetWeightController = TextEditingController();
 
   Gender? _selectedGender;
   ActivityLevel? _selectedActivityLevel;
   GoalType? _selectedGoalType;
   DateTime? _selectedDateOfBirth;
+
+  bool get _shouldEnterTargetWeight =>
+      _selectedGoalType == GoalType.weightLoss || _selectedGoalType == GoalType.muscleGain;
 
   @override
   void dispose() {
@@ -33,10 +39,10 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
     _phoneController.dispose();
     _weightController.dispose();
     _heightController.dispose();
+    _targetWeightController.dispose();
     super.dispose();
   }
 
-  // Helper to calculate age from birth date
   int? _calculateAge(DateTime? birthDate) {
     if (birthDate == null) return null;
     final today = DateTime.now();
@@ -48,7 +54,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
     return age;
   }
 
-  // Save button handler: validates and saves profile, then navigates to main page
   Future<void> _onSave() async {
     final age = _calculateAge(_selectedDateOfBirth);
     if (_formKey.currentState!.validate() &&
@@ -61,13 +66,42 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
         phone: _phoneController.text,
-        dob: _selectedDateOfBirth!.toIso8601String().substring(0, 10), // "YYYY-MM-DD"
+        dob: _selectedDateOfBirth!.toIso8601String().substring(0, 10),
         weight: double.tryParse(_weightController.text),
         height: double.tryParse(_heightController.text),
         age: age,
         gender: _selectedGender!.name,
         activityLevel: _selectedActivityLevel!.name,
       );
+
+      final todayPlus30 = DateTime.now().add(const Duration(days: 30));
+      final onlyDate = DateTime(todayPlus30.year, todayPlus30.month, todayPlus30.day);
+
+      final currentWeight = double.tryParse(_weightController.text) ?? 0.0;
+      final targetWeight = _shouldEnterTargetWeight
+          ? double.tryParse(_targetWeightController.text) ?? currentWeight
+          : currentWeight;
+
+      const double maintenanceCalories = 2200;
+
+      const int kcalPerKg = 7700;
+      const int durationDays = 30;
+
+      final weightDelta = targetWeight - currentWeight;
+      final totalKcalChange = weightDelta * kcalPerKg;
+      final dailyAdjustment = totalKcalChange / durationDays;
+
+      final calculatedCalories = maintenanceCalories + dailyAdjustment;
+
+      final calculation = UserTargetCalculation(
+        calculatedNormalCalories: calculatedCalories.round(),
+        calculatedWeight: targetWeight,
+        calculatedTargetDate: onlyDate,
+      );
+
+      await ref
+          .read(userTargetCalculationNotifierProvider.notifier)
+          .addCalculation(calculation);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -78,12 +112,10 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
     }
   }
 
-  // Skip button handler: just goes to the main page
   void _onSkip() {
     context.go('/');
   }
 
-  // Show date picker for date of birth
   Future<void> _pickDateOfBirth(BuildContext context) async {
     final initialDate = _selectedDateOfBirth ?? DateTime(2000, 1, 1);
     final picked = await showDatePicker(
@@ -112,21 +144,18 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
             key: _formKey,
             child: Column(
               children: [
-                // First Name
                 TextFormField(
                   controller: _firstNameController,
                   decoration: const InputDecoration(labelText: 'First Name'),
                   validator: (v) => v == null || v.isEmpty ? 'Enter first name' : null,
                 ),
                 const SizedBox(height: 16),
-                // Last Name
                 TextFormField(
                   controller: _lastNameController,
                   decoration: const InputDecoration(labelText: 'Last Name'),
                   validator: (v) => v == null || v.isEmpty ? 'Enter last name' : null,
                 ),
                 const SizedBox(height: 16),
-                // Phone
                 TextFormField(
                   controller: _phoneController,
                   decoration: const InputDecoration(labelText: 'Phone'),
@@ -134,22 +163,22 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   validator: (v) => v == null || v.isEmpty ? 'Enter phone number' : null,
                 ),
                 const SizedBox(height: 16),
-                // Date of Birth
                 GestureDetector(
                   onTap: () => _pickDateOfBirth(context),
                   child: AbsorbPointer(
                     child: TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Date of Birth',
                         hintText: 'Select your date of birth',
-                        suffixIcon: const Icon(Icons.calendar_today),
+                        suffixIcon: Icon(Icons.calendar_today),
                       ),
                       controller: TextEditingController(
                         text: _selectedDateOfBirth != null
                             ? "${_selectedDateOfBirth!.year}-${_selectedDateOfBirth!.month.toString().padLeft(2, '0')}-${_selectedDateOfBirth!.day.toString().padLeft(2, '0')}"
                             : '',
                       ),
-                      validator: (_) => _selectedDateOfBirth == null ? 'Select date of birth' : null,
+                      validator: (_) =>
+                      _selectedDateOfBirth == null ? 'Select date of birth' : null,
                     ),
                   ),
                 ),
@@ -159,7 +188,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                     child: Text('Your age: $age'),
                   ),
                 const SizedBox(height: 16),
-                // Gender
                 DropdownButtonFormField<Gender>(
                   value: _selectedGender,
                   decoration: const InputDecoration(labelText: 'Gender'),
@@ -173,7 +201,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   validator: (v) => v == null ? 'Select gender' : null,
                 ),
                 const SizedBox(height: 16),
-                // Weight
                 TextFormField(
                   controller: _weightController,
                   decoration: const InputDecoration(labelText: 'Weight (kg)'),
@@ -181,7 +208,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   validator: (v) => v == null || v.isEmpty ? 'Enter weight' : null,
                 ),
                 const SizedBox(height: 16),
-                // Height
                 TextFormField(
                   controller: _heightController,
                   decoration: const InputDecoration(labelText: 'Height (cm)'),
@@ -189,7 +215,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   validator: (v) => v == null || v.isEmpty ? 'Enter height' : null,
                 ),
                 const SizedBox(height: 16),
-                // Activity Level
                 DropdownButtonFormField<ActivityLevel>(
                   value: _selectedActivityLevel,
                   decoration: const InputDecoration(labelText: 'Activity Level'),
@@ -203,7 +228,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   validator: (v) => v == null ? 'Select activity level' : null,
                 ),
                 const SizedBox(height: 16),
-                // Goal type
                 DropdownButtonFormField<GoalType>(
                   value: _selectedGoalType,
                   decoration: const InputDecoration(labelText: 'Goal'),
@@ -216,8 +240,16 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   onChanged: (g) => setState(() => _selectedGoalType = g),
                   validator: (v) => v == null ? 'Select goal' : null,
                 ),
+                const SizedBox(height: 16),
+                if (_shouldEnterTargetWeight)
+                  TextFormField(
+                    controller: _targetWeightController,
+                    decoration: const InputDecoration(labelText: 'Target Weight (kg)'),
+                    keyboardType: TextInputType.number,
+                    validator: (v) =>
+                    v == null || v.isEmpty ? 'Enter target weight' : null,
+                  ),
                 const SizedBox(height: 24),
-                // Buttons row: Skip and Save (Skip first)
                 Row(
                   children: [
                     Expanded(

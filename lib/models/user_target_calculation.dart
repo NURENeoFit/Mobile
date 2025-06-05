@@ -27,6 +27,6 @@ class UserTargetCalculation {
   Map<String, dynamic> toJson() => {
     'calculated_normal_calories': calculatedNormalCalories,
     'calculated_weight': calculatedWeight,
-    'calculated_target_date': calculatedTargetDate.toIso8601String(),
+    'calculated_target_date': calculatedTargetDate.toIso8601String().substring(0, 10),
   };
 }
