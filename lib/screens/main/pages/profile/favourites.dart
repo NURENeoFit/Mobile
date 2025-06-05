@@ -17,16 +17,25 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   List<WorkoutProgram> favouritePrograms = [];
   List<Trainer> allTrainers = [];
   String searchQuery = '';
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(_loadFavourites);
+    Future.microtask(() {
+      _loadFavourites();
+    });
   }
 
   Future<void> _loadFavourites() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final prefs = await SharedPreferences.getInstance();
     final favIds = prefs.getStringList('favorite_workouts') ?? [];
+
+    await ref.read(trainerNotifierProvider.notifier).refresh();
 
     final trainers = ref.read(trainerNotifierProvider).maybeWhen(
       data: (data) => data,
@@ -45,6 +54,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     setState(() {
       allTrainers = trainers;
       favouritePrograms = favPrograms;
+      _isLoading = false;
     });
   }
 
@@ -124,7 +134,9 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
       appBar: AppBar(
         title: Text('Favourites', style: Theme.of(context).textTheme.headlineMedium),
       ),
-      body: hasFavourites
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : hasFavourites
           ? Column(
         children: [
           Padding(
