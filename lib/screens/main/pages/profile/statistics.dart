@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:neofit_mobile/providers/user/user_meal_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:neofit_mobile/models/user_target_calculation.dart';
 import 'package:neofit_mobile/models/user_meal.dart';
 import 'package:neofit_mobile/providers/user/user_target_calculation_provider.dart';
 import 'package:neofit_mobile/providers/user/user_profile_provider.dart';
-import 'package:neofit_mobile/services/user/user_meal_service.dart';
-
-final userMealsProvider = FutureProvider<List<UserMeal>>((ref) async {
-  return await UserMealService().fetchMealsForUser();
-});
 
 class StatisticsPage extends ConsumerStatefulWidget {
   const StatisticsPage({super.key});
@@ -52,7 +48,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     final textTheme = Theme.of(context).textTheme;
 
     final calculationAsync = ref.watch(userTargetCalculationNotifierProvider);
-    final mealsAsync = ref.watch(userMealsProvider);
+    final mealsAsync = ref.watch(userMealNotifierProvider);
     final profileAsync = ref.watch(userProfileNotifierProvider);
 
     return Scaffold(
@@ -96,7 +92,6 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
 
           final int targetCalories = weightData.first.calculatedNormalCalories;
 
-          // Сумма калорий за сегодня
           final today = DateTime.now();
           int todayCalories = 0;
           if (mealsAsync is AsyncData<List<UserMeal>>) {
