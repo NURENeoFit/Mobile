@@ -7,7 +7,7 @@ import 'package:neofit_mobile/screens/main/pages/profile/profile.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/details.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/favourites.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/settings.dart';
-import 'package:neofit_mobile/screens/main/pages/profile/statistics.dart';
+import 'package:neofit_mobile/screens/main/pages/profile/statistics/statistics.dart';
 import 'package:neofit_mobile/screens/main/pages/profile/abonnement.dart';
 import 'package:neofit_mobile/screens/main/pages/trainings/exercises.dart';
 import 'package:neofit_mobile/screens/register/complete_profile.dart';
