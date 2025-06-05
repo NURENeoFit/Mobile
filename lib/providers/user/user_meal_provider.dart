@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neofit_mobile/models/user_meal.dart';
-import 'package:neofit_mobile/services/user_meal_service.dart';
+import 'package:neofit_mobile/services/user/user_meal_service.dart';
 
 final userMealNotifierProvider =
 AsyncNotifierProvider<UserMealNotifier, List<UserMeal>>(

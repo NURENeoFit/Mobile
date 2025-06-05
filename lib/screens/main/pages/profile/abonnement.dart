@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:neofit_mobile/providers/membership_provider.dart';
+import 'package:neofit_mobile/providers/membership/membership_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:convert';
 

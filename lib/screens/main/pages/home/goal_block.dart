@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:neofit_mobile/providers/user_profile_provider.dart';
-import 'package:neofit_mobile/providers/user_target_calculation_provider.dart';
+import 'package:neofit_mobile/providers/user/user_profile_provider.dart';
+import 'package:neofit_mobile/providers/user/user_target_calculation_provider.dart';
 
 class GoalBlock extends ConsumerWidget {
   const GoalBlock({super.key});

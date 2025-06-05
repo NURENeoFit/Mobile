@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:neofit_mobile/models/trainings/trainer.dart';
 import 'package:neofit_mobile/models/trainings/workout_program.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:neofit_mobile/providers/workout_provider.dart';
+import 'package:neofit_mobile/providers/trainings/workout_provider.dart';
 
 class FavouritesPage extends ConsumerStatefulWidget {
   const FavouritesPage({super.key});

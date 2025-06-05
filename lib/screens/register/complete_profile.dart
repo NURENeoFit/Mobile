@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neofit_mobile/models/user/program_goal.dart';
 import 'package:neofit_mobile/models/user/personal_user_data.dart';
-import 'package:neofit_mobile/providers/user_profile_provider.dart';
+import 'package:neofit_mobile/providers/user/user_profile_provider.dart';
 
 class CompleteProfilePage extends ConsumerStatefulWidget {
   const CompleteProfilePage({super.key});

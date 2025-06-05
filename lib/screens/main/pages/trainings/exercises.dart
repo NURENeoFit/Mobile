@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neofit_mobile/models/trainings/trainer.dart';
 import 'package:neofit_mobile/models/trainings/workout_program.dart';
-import 'package:neofit_mobile/providers/workout_provider.dart';
+import 'package:neofit_mobile/providers/trainings/workout_provider.dart';
 
 class TrainingDetailPage extends ConsumerStatefulWidget {
   final WorkoutProgram workoutProgram;

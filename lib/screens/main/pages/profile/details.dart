@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:neofit_mobile/providers/user_profile_provider.dart';
+import 'package:neofit_mobile/providers/user/user_profile_provider.dart';
 
 class DetailsPage extends ConsumerStatefulWidget {
   const DetailsPage({super.key});

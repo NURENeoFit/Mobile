@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:neofit_mobile/providers/training_provider.dart';
-import 'package:neofit_mobile/providers/membership_provider.dart';
+import 'package:neofit_mobile/providers/schedule/training_provider.dart';
+import 'package:neofit_mobile/providers/membership/membership_provider.dart';
 import 'package:neofit_mobile/screens/main/pages/home/goal_block.dart';
 
 class HomePage extends ConsumerStatefulWidget {

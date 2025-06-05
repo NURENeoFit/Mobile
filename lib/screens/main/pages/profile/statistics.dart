@@ -4,7 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:neofit_mobile/models/user_target_calculation.dart';
-import 'package:neofit_mobile/providers/user_target_calculation_provider.dart';
+import 'package:neofit_mobile/providers/user/user_target_calculation_provider.dart';
 
 class StatisticsPage extends ConsumerStatefulWidget {
   const StatisticsPage({super.key});

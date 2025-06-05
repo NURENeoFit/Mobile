@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neofit_mobile/models/user_meal.dart';
-import 'package:neofit_mobile/providers/user_meal_provider.dart';
+import 'package:neofit_mobile/providers/user/user_meal_provider.dart';
 
 class CaloriesPage extends ConsumerStatefulWidget {
   const CaloriesPage({super.key});

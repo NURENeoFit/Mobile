@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neofit_mobile/models/user/full_user_profile.dart';
-import 'package:neofit_mobile/services/user_profile_service.dart';
+import 'package:neofit_mobile/services/user/user_profile_service.dart';
 
 final userProfileNotifierProvider =
 AsyncNotifierProvider<UserProfileNotifier, FullUserProfile?>(

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neofit_mobile/models/schedule/training.dart';
-import 'package:neofit_mobile/services/training_service.dart';
+import 'package:neofit_mobile/services/schedule/training_service.dart';
 
 final trainingNotifierProvider =
 AsyncNotifierProvider<TrainingNotifier, Map<DateTime, List<Training>>>(
