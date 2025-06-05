@@ -4,7 +4,13 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:neofit_mobile/models/user_target_calculation.dart';
+import 'package:neofit_mobile/models/user_meal.dart';
 import 'package:neofit_mobile/providers/user/user_target_calculation_provider.dart';
+import 'package:neofit_mobile/services/user/user_meal_service.dart';
+
+final userMealsProvider = FutureProvider<List<UserMeal>>((ref) async {
+  return await UserMealService().fetchMealsForUser();
+});
 
 class StatisticsPage extends ConsumerStatefulWidget {
   const StatisticsPage({super.key});
@@ -41,6 +47,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     final textTheme = Theme.of(context).textTheme;
 
     final calculationAsync = ref.watch(userTargetCalculationNotifierProvider);
+    final mealsAsync = ref.watch(userMealsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -69,20 +76,27 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
           final List<UserTargetCalculation> weightData = [...data]
             ..sort((a, b) => b.calculatedTargetDate.compareTo(a.calculatedTargetDate));
 
-          final List<UserTargetCalculation> weightDataOldestFirst = [...weightData].reversed.toList();
+          final List<UserTargetCalculation> weightDataForChart = [...weightData].reversed.toList();
 
-          final spots = weightDataOldestFirst
+          final spots = weightDataForChart
               .asMap()
               .entries
               .map((e) => FlSpot(e.key.toDouble(), e.value.calculatedWeight))
               .toList();
 
-          final double currentCalories = weightData.isNotEmpty
-              ? weightData.first.calculatedNormalCalories.toDouble()
-              : 0;
-          final double dailyTargetCalories = weightData.isNotEmpty
-              ? weightData.map((e) => e.calculatedNormalCalories).reduce((a, b) => a > b ? a : b).toDouble()
-              : 2000;
+          final int targetCalories = weightData.first.calculatedNormalCalories;
+
+          // Сумма калорий за сегодня
+          final today = DateTime.now();
+          int todayCalories = 0;
+          if (mealsAsync is AsyncData<List<UserMeal>>) {
+            todayCalories = mealsAsync.value
+                .where((meal) =>
+            meal.createdTime.year == today.year &&
+                meal.createdTime.month == today.month &&
+                meal.createdTime.day == today.day)
+                .fold(0, (sum, meal) => sum + meal.calories);
+          }
 
           return ListView(
             padding: const EdgeInsets.only(top: 16, bottom: 24),
@@ -95,20 +109,19 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                     Center(
                       child: Column(
                         children: [
-                          if (weightData.isNotEmpty)
-                            Text(
-                              "You're on track to reach ${weightData.first.calculatedWeight} kg",
-                              style: textTheme.titleSmall,
-                              textAlign: TextAlign.center,
-                            ),
+                          Text(
+                            "You're on track to reach ${weightData.first.calculatedWeight} kg",
+                            style: textTheme.titleSmall,
+                            textAlign: TextAlign.center,
+                          ),
                           const SizedBox(height: 20),
                           SizedBox(
                             height: 220,
-                            width: weightDataOldestFirst.length * 70,
+                            width: weightDataForChart.length * 70,
                             child: LineChart(
                               LineChartData(
-                                minY: weightDataOldestFirst.map((e) => e.calculatedWeight).reduce((a, b) => a < b ? a : b) - 1,
-                                maxY: weightDataOldestFirst.map((e) => e.calculatedWeight).reduce((a, b) => a > b ? a : b) + 1,
+                                minY: weightDataForChart.map((e) => e.calculatedWeight).reduce((a, b) => a < b ? a : b) - 1,
+                                maxY: weightDataForChart.map((e) => e.calculatedWeight).reduce((a, b) => a > b ? a : b) + 1,
                                 gridData: FlGridData(show: true),
                                 borderData: FlBorderData(show: true),
                                 lineTouchData: LineTouchData(
@@ -152,8 +165,8 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                                       interval: 1,
                                       getTitlesWidget: (value, _) {
                                         final index = value.toInt();
-                                        if (index < weightDataOldestFirst.length) {
-                                          final date = weightDataOldestFirst[index].calculatedTargetDate;
+                                        if (index < weightDataForChart.length) {
+                                          final date = weightDataForChart[index].calculatedTargetDate;
                                           return Padding(
                                             padding: const EdgeInsets.only(top: 8),
                                             child: Text(
@@ -202,14 +215,14 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                     Text("Today's Calories", style: textTheme.titleSmall),
                     const SizedBox(height: 8),
                     LinearProgressIndicator(
-                      value: dailyTargetCalories == 0 ? 0 : currentCalories / dailyTargetCalories,
+                      value: targetCalories == 0 ? 0 : todayCalories / targetCalories,
                       backgroundColor: colorScheme.primary.withAlpha(40),
                       color: colorScheme.primary,
                       minHeight: 14,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '${currentCalories.toInt()} / ${dailyTargetCalories.toInt()} kcal',
+                      '$todayCalories / $targetCalories kcal',
                       style: textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurface.withAlpha(180),
                       ),
@@ -218,15 +231,11 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Collapsible history section
               StatefulBuilder(
                 builder: (context, setInnerState) {
                   return Card(
                     margin: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                     elevation: 2,
                     color: colorScheme.surface,
                     child: Column(
@@ -240,23 +249,13 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                           child: Container(
                             color: colorScheme.primary.withAlpha(30),
                             child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 10
-                              ),
-                              leading: Icon(Icons.history,
-                                  color: colorScheme.onSurface
-                              ),
-                              title: Text(
-                                'History',
-                                style: textTheme.titleSmall,
-                              ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              leading: Icon(Icons.history, color: colorScheme.onSurface),
+                              title: Text('History', style: textTheme.titleSmall),
                               trailing: AnimatedRotation(
                                 turns: _historyExpanded ? 0.5 : 0,
                                 duration: const Duration(milliseconds: 200),
-                                child: Icon(
-                                  Icons.expand_more,
-                                  color: colorScheme.onSurface,
-                                ),
+                                child: Icon(Icons.expand_more, color: colorScheme.onSurface),
                               ),
                             ),
                           ),
@@ -308,10 +307,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
                   );
                 },
               ),
-
               const SizedBox(height: 24),
-
-              // Share button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ElevatedButton.icon(
