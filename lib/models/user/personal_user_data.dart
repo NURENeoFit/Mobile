@@ -6,7 +6,7 @@ enum ActivityLevel { low, medium, high }
 class PersonalUserData {
   final ProgramGoal goal;
   final double weightKg;
-  final double heightCm;
+  final int heightCm;
   final int age;
   final Gender gender;
   final ActivityLevel activityLevel;
@@ -25,7 +25,7 @@ class PersonalUserData {
         ? ProgramGoal.fromJson(json['goal'] as Map<String, dynamic>)
         : ProgramGoal(goalType: GoalType.generalFitness, description: ''),
     weightKg: (json['weight_kg'] as num?)?.toDouble() ?? 0.0,
-    heightCm: (json['height_cm'] as num?)?.toDouble() ?? 0.0,
+    heightCm: json['height_cm'] ?? 0,
     age: json['age'] ?? 0,
     gender: Gender.values.firstWhere(
           (e) => e.name == (json['gender'] ?? ''),

@@ -3,6 +3,7 @@ import 'package:neofit_mobile/services/dio_client.dart';
 
 import 'package:neofit_mobile/models/schedule/training.dart';
 
+//TODO: Change link and method
 class TrainingService {
   final Dio _dio = DioClient.instance;
 

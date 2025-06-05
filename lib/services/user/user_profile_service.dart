@@ -5,52 +5,44 @@ import 'package:neofit_mobile/models/user/user.dart';
 import 'package:neofit_mobile/services/dio_client.dart';
 import 'package:neofit_mobile/models/user/full_user_profile.dart';
 
+//TODO: Change link
 class UserProfileService {
   final Dio _dio = DioClient.instance;
 
   Future<FullUserProfile?> fetchUserProfile() async {
     try {
-      // 1. Get user data (simulate /me endpoint)
       final userResponse = await _dio.get('/users/1');
       if (userResponse.statusCode != 200) return null;
       final userJson = userResponse.data;
 
-      // 2. Get personal user data by user_id
-      final pudResponse = await _dio.get(
-        '/personal_user_data',
-        queryParameters: {'user_id': userJson['user_id']},
-      );
-      // json-server returns an array, check if not empty
-      if (pudResponse.statusCode != 200 || pudResponse.data.isEmpty) return null;
-      final pudJson = pudResponse.data[0];
+      final pudResponse = await _dio.get('/personal_user_data/1');
+      //queryParameters: {'user_id': userJson['user_id']}
 
-      // 3. Get the program goal by goal_id
+      if (pudResponse.statusCode != 200) return null;
+      final pudJson = pudResponse.data;
+
       final goalResponse = await _dio.get('/program_goals/${pudJson['goal_id']}');
       if (goalResponse.statusCode != 200) return null;
       final goalJson = goalResponse.data;
 
-      // Build Dart models from JSON
       final user = User.fromJson(userJson);
       final goal = ProgramGoal.fromJson(goalJson);
 
-      final personalUserData = PersonalUserData(
-        goal: goal,
-        weightKg: (pudJson['weight_kg'] as num).toDouble(),
-        heightCm: (pudJson['height_cm'] as num).toDouble(),
-        age: pudJson['age'],
-        gender: Gender.values.firstWhere((e) => e.name == pudJson['gender']),
-        activityLevel: ActivityLevel.values.firstWhere((e) => e.name == pudJson['activity_level']),
+      final personalUserData = PersonalUserData.fromJson(
+        {
+          "goal": goal.toJson(),
+          ...pudJson
+        }
       );
 
-      // Return full user profile object
       return FullUserProfile(
         user: user,
         personalData: personalUserData,
       );
     } catch (e) {
-      // Log and handle error
       print('Error fetching user profile: $e');
     }
+
     return null;
   }
 
@@ -100,17 +92,5 @@ class UserProfileService {
       print('Error updating personal user data: $e');
       rethrow;
     }
-  }
-
-  Future<Map<String, dynamic>?> fetchPersonalUserData() async {
-    try {
-      final response = await _dio.get('/personal-user-data/me');
-      if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
-      }
-    } catch (e) {
-      print('Error fetching personal user data: $e');
-    }
-    return null;
   }
 }
