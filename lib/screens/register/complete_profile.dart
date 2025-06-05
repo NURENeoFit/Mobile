@@ -67,7 +67,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         age: age,
         gender: _selectedGender!.name,
         activityLevel: _selectedActivityLevel!.name,
-        // goalId если нужно для бэка — добавь здесь
       );
 
       if (mounted) {

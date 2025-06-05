@@ -1,4 +1,23 @@
-enum GoalType { weightLoss, muscleGain, endurance, generalFitness }
+enum GoalType {
+  weightLoss,
+  muscleGain,
+  endurance,
+  generalFitness;
+
+  @override
+  String toString() {
+    switch (this) {
+      case GoalType.weightLoss:
+        return 'Weight Loss';
+      case GoalType.muscleGain:
+        return 'Muscle Gain';
+      case GoalType.endurance:
+        return 'Endurance';
+      case GoalType.generalFitness:
+        return 'General Fitness';
+    }
+  }
+}
 
 class ProgramGoal {
   final GoalType goalType;
