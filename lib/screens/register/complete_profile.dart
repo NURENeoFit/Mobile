@@ -29,6 +29,8 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
   GoalType? _selectedGoalType;
   DateTime? _selectedDateOfBirth;
 
+  String? _targetWeightErrorText;
+
   bool get _shouldEnterTargetWeight =>
       _selectedGoalType == GoalType.weightLoss || _selectedGoalType == GoalType.muscleGain;
 
@@ -47,8 +49,7 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
     if (birthDate == null) return null;
     final today = DateTime.now();
     int age = today.year - birthDate.year;
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
+    if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
       age--;
     }
     return age;
@@ -56,6 +57,29 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
 
   Future<void> _onSave() async {
     final age = _calculateAge(_selectedDateOfBirth);
+    final currentWeight = double.tryParse(_weightController.text) ?? 0.0;
+    final targetWeight = _shouldEnterTargetWeight
+        ? double.tryParse(_targetWeightController.text) ?? currentWeight
+        : currentWeight;
+
+    _targetWeightErrorText = null;
+
+    if (_shouldEnterTargetWeight) {
+      if (_selectedGoalType == GoalType.weightLoss && targetWeight >= currentWeight) {
+        setState(() {
+          _targetWeightErrorText = 'Target must be less than current weight';
+        });
+        return;
+      }
+
+      if (_selectedGoalType == GoalType.muscleGain && targetWeight <= currentWeight) {
+        setState(() {
+          _targetWeightErrorText = 'Target must be greater than current weight';
+        });
+        return;
+      }
+    }
+
     if (_formKey.currentState!.validate() &&
         _selectedGender != null &&
         _selectedActivityLevel != null &&
@@ -67,7 +91,7 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         lastName: _lastNameController.text,
         phone: _phoneController.text,
         dob: _selectedDateOfBirth!.toIso8601String().substring(0, 10),
-        weight: double.tryParse(_weightController.text),
+        weight: currentWeight,
         height: double.tryParse(_heightController.text),
         age: age,
         gender: _selectedGender!.name,
@@ -77,13 +101,7 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
       final todayPlus30 = DateTime.now().add(const Duration(days: 30));
       final onlyDate = DateTime(todayPlus30.year, todayPlus30.month, todayPlus30.day);
 
-      final currentWeight = double.tryParse(_weightController.text) ?? 0.0;
-      final targetWeight = _shouldEnterTargetWeight
-          ? double.tryParse(_targetWeightController.text) ?? currentWeight
-          : currentWeight;
-
       const double maintenanceCalories = 2200;
-
       const int kcalPerKg = 7700;
       const int durationDays = 30;
 
@@ -99,9 +117,7 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         calculatedTargetDate: onlyDate,
       );
 
-      await ref
-          .read(userTargetCalculationNotifierProvider.notifier)
-          .addCalculation(calculation);
+      await ref.read(userTargetCalculationNotifierProvider.notifier).addCalculation(calculation);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -177,8 +193,24 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                             ? "${_selectedDateOfBirth!.year}-${_selectedDateOfBirth!.month.toString().padLeft(2, '0')}-${_selectedDateOfBirth!.day.toString().padLeft(2, '0')}"
                             : '',
                       ),
-                      validator: (_) =>
-                      _selectedDateOfBirth == null ? 'Select date of birth' : null,
+                      validator: (_) {
+                        if (_selectedDateOfBirth == null) {
+                          return 'Select date of birth';
+                        }
+
+                        final today = DateTime.now();
+                        final age = today.year - _selectedDateOfBirth!.year -
+                            ((today.month < _selectedDateOfBirth!.month ||
+                                (today.month == _selectedDateOfBirth!.month && today.day < _selectedDateOfBirth!.day))
+                                ? 1
+                                : 0);
+
+                        if (age < 12) {
+                          return 'You must be at least 12 years old';
+                        }
+
+                        return null;
+                      },
                     ),
                   ),
                 ),
@@ -205,14 +237,44 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   controller: _weightController,
                   decoration: const InputDecoration(labelText: 'Weight (kg)'),
                   keyboardType: TextInputType.number,
-                  validator: (v) => v == null || v.isEmpty ? 'Enter weight' : null,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) {
+                      return 'Enter weight';
+                    }
+
+                    final numValue = double.tryParse(v);
+                    if (numValue == null) {
+                      return 'Enter a valid number';
+                    }
+
+                    if (numValue < 30 || numValue > 200) {
+                      return 'Weight must be between 30 and 200 kg';
+                    }
+
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _heightController,
                   decoration: const InputDecoration(labelText: 'Height (cm)'),
                   keyboardType: TextInputType.number,
-                  validator: (v) => v == null || v.isEmpty ? 'Enter height' : null,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) {
+                      return 'Enter height';
+                    }
+
+                    final numValue = double.tryParse(v);
+                    if (numValue == null) {
+                      return 'Enter a valid number';
+                    }
+
+                    if (numValue < 120 || numValue > 240) {
+                      return 'Height must be between 120 and 240 cm';
+                    }
+
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<ActivityLevel>(
@@ -244,10 +306,27 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                 if (_shouldEnterTargetWeight)
                   TextFormField(
                     controller: _targetWeightController,
-                    decoration: const InputDecoration(labelText: 'Target Weight (kg)'),
+                    decoration: InputDecoration(
+                      labelText: 'Target Weight (kg)',
+                      errorText: _targetWeightErrorText,
+                    ),
                     keyboardType: TextInputType.number,
-                    validator: (v) =>
-                    v == null || v.isEmpty ? 'Enter target weight' : null,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Enter weight';
+                      }
+
+                      final numValue = double.tryParse(v);
+                      if (numValue == null) {
+                        return 'Enter a valid number';
+                      }
+
+                      if (numValue < 30 || numValue > 200) {
+                        return 'Weight must be between 30 and 200 kg';
+                      }
+
+                      return null;
+                    },
                   ),
                 const SizedBox(height: 24),
                 Row(
