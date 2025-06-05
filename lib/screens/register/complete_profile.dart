@@ -211,7 +211,7 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   items: GoalType.values.map((g) {
                     return DropdownMenuItem(
                       value: g,
-                      child: Text(_goalTypeToString(g)),
+                      child: Text(g.toString()),
                     );
                   }).toList(),
                   onChanged: (g) => setState(() => _selectedGoalType = g),
@@ -242,19 +242,5 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         ),
       ),
     );
-  }
-
-  // Converts GoalType enum to user-friendly string
-  String _goalTypeToString(GoalType g) {
-    switch (g) {
-      case GoalType.weightLoss:
-        return 'Weight Loss';
-      case GoalType.muscleGain:
-        return 'Muscle Gain';
-      case GoalType.endurance:
-        return 'Endurance';
-      case GoalType.generalFitness:
-        return 'General Fitness';
-    }
   }
 }

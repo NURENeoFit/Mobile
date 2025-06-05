@@ -18,4 +18,18 @@ class ProgramGoal {
     'goal_type': goalType.name,
     'description': description,
   };
+
+  @override
+  String toString() {
+    switch (this.goalType) {
+      case GoalType.weightLoss:
+        return 'Weight Loss';
+      case GoalType.muscleGain:
+        return 'Muscle Gain';
+      case GoalType.endurance:
+        return 'Endurance';
+      case GoalType.generalFitness:
+        return 'General Fitness';
+    }
+  }
 }
