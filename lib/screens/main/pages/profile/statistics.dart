@@ -27,7 +27,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     });
   }
 
-  void _shareResult(List<UserTargetCalculation> data, double currentWeight, int heightCm) {
+  void _shareResult(List<UserTargetCalculation> data, double currentWeight, int heightCm, int todayCalories) {
     if (data.isEmpty) return;
     final latest = data.first;
 
@@ -36,7 +36,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
         '📏 Height: ${heightCm} cm\n\n'
         '🎯 Target date: ${latest.calculatedTargetDate.toIso8601String().split('T').first}\n\n'
         '🏁 Goal weight: ${latest.calculatedWeight.toStringAsFixed(1)} kg\n\n'
-        '🔥 Daily calories: ${latest.calculatedNormalCalories} kcal\n\n'
+        '🔥 Daily calories: ${todayCalories}/${latest.calculatedNormalCalories} kcal\n\n'
         'Tracking my results with Neofit! 💪';
 
     Share.share(message);
@@ -316,7 +316,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ElevatedButton.icon(
-                  onPressed: () => _shareResult(weightData, currentWeight, heightCm),
+                  onPressed: () => _shareResult(weightData, currentWeight, heightCm, todayCalories),
                   icon: const Icon(Icons.share),
                   label: const Text('Share Result'),
                   style: ElevatedButton.styleFrom(
