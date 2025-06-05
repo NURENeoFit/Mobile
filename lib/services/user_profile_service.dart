@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:neofit_mobile/models/user/personal_user_data.dart';
+import 'package:neofit_mobile/models/user/program_goal.dart';
+import 'package:neofit_mobile/models/user/user.dart';
 import 'package:neofit_mobile/services/dio_client.dart';
 import 'package:neofit_mobile/models/user/full_user_profile.dart';
 
@@ -7,12 +10,45 @@ class UserProfileService {
 
   Future<FullUserProfile?> fetchUserProfile() async {
     try {
-      final response = await _dio.get('/userProfiles/me');
-      final data = response.statusCode == 200 ? response.data : null;
-      if (data is Map<String, dynamic>) {
-        return FullUserProfile.fromJson(data);
-      }
+      // 1. Get user data (simulate /me endpoint)
+      final userResponse = await _dio.get('/users/1');
+      if (userResponse.statusCode != 200) return null;
+      final userJson = userResponse.data;
+
+      // 2. Get personal user data by user_id
+      final pudResponse = await _dio.get(
+        '/personal_user_data',
+        queryParameters: {'user_id': userJson['user_id']},
+      );
+      // json-server returns an array, check if not empty
+      if (pudResponse.statusCode != 200 || pudResponse.data.isEmpty) return null;
+      final pudJson = pudResponse.data[0];
+
+      // 3. Get the program goal by goal_id
+      final goalResponse = await _dio.get('/program_goals/${pudJson['goal_id']}');
+      if (goalResponse.statusCode != 200) return null;
+      final goalJson = goalResponse.data;
+
+      // Build Dart models from JSON
+      final user = User.fromJson(userJson);
+      final goal = ProgramGoal.fromJson(goalJson);
+
+      final personalUserData = PersonalUserData(
+        goal: goal,
+        weightKg: (pudJson['weight_kg'] as num).toDouble(),
+        heightCm: (pudJson['height_cm'] as num).toDouble(),
+        age: pudJson['age'],
+        gender: Gender.values.firstWhere((e) => e.name == pudJson['gender']),
+        activityLevel: ActivityLevel.values.firstWhere((e) => e.name == pudJson['activity_level']),
+      );
+
+      // Return full user profile object
+      return FullUserProfile(
+        user: user,
+        personalData: personalUserData,
+      );
     } catch (e) {
+      // Log and handle error
       print('Error fetching user profile: $e');
     }
     return null;

@@ -16,11 +16,11 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    userFirstName: json['user_first_name'],
-    userLastName: json['user_last_name'],
-    username: json['username'],
-    userPhone: json['user_phone'],
-    userEmail: json['user_email'],
+    userFirstName: json['user_first_name'] ?? '',
+    userLastName: json['user_last_name'] ?? '',
+    username: json['username'] ?? '',
+    userPhone: json['user_phone'] ?? '',
+    userEmail: json['user_email'] ?? '',
     userDob: DateTime.parse(json['user_dob']),
   );
 
