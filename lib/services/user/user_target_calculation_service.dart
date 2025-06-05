@@ -26,6 +26,7 @@ class UserTargetCalculationService {
     try {
       final list = await fetchUserTargetCalculations();
       if (list.isNotEmpty) {
+        list.sort((a, b) => a.calculatedTargetDate.compareTo(b.calculatedTargetDate));
         return list.last;
       }
     } catch (e) {

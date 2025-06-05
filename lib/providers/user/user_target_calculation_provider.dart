@@ -7,12 +7,8 @@ AsyncNotifierProvider<UserTargetCalculationNotifier, List<UserTargetCalculation>
   UserTargetCalculationNotifier.new,
 );
 
-final lastUserTargetCalculationProvider = Provider<UserTargetCalculation?>((ref) {
-  final list = ref.watch(userTargetCalculationNotifierProvider).value;
-  if (list != null && list.isNotEmpty) {
-    return list.last;
-  }
-  return null;
+final lastUserTargetCalculationProvider = FutureProvider<UserTargetCalculation?>((ref) async {
+  return await UserTargetCalculationService().fetchLastUserTargetCalculation();
 });
 
 class UserTargetCalculationNotifier extends AsyncNotifier<List<UserTargetCalculation>> {
@@ -33,13 +29,5 @@ class UserTargetCalculationNotifier extends AsyncNotifier<List<UserTargetCalcula
     state = const AsyncLoading();
     final data = await UserTargetCalculationService().fetchUserTargetCalculations();
     state = AsyncData(data);
-  }
-
-  UserTargetCalculation? getLastCalculation() {
-    final list = state.value;
-    if (list != null && list.isNotEmpty) {
-      return list.last;
-    }
-    return null;
   }
 }

@@ -55,7 +55,7 @@ class GoalBlock extends ConsumerWidget {
 
     final profile = profileAsync.value!;
     final goal = profile.personalData.goal;
-    final startWeight = profile.personalData.weightKg;
+    final currentWeight = profile.personalData.weightKg;
 
     if (calcAsync.isLoading) {
       return _buildGoalContent(goalDesc: goal.toString(), percent: 0.0, progressText: '—');
@@ -66,18 +66,17 @@ class GoalBlock extends ConsumerWidget {
 
     final calculations = calcAsync.value!;
     final latest = calculations.first;
-    final targetWeight = latest.calculatedWeight;
-    final percent = (startWeight - targetWeight).abs() < 0.1
+    final lastWeight = latest.calculatedWeight;
+
+    final percent = (currentWeight - lastWeight).abs() < 0.1
         ? 1.0
-        : ((startWeight - latest.calculatedWeight).abs() /
-        (startWeight - targetWeight).abs())
-        .clamp(0.0, 1.0);
-    final left = (latest.calculatedWeight - targetWeight).abs();
-    final progressText = '${left.toStringAsFixed(1)} kg left';
+        : (currentWeight - lastWeight).abs() / (currentWeight == 0 ? 1 : currentWeight);
+    final difference = (currentWeight - lastWeight).abs();
+    final progressText = '${difference.toStringAsFixed(1)} kg left';
 
     return _buildGoalContent(
       goalDesc: goal.toString(),
-      percent: percent,
+      percent: percent.clamp(0.0, 1.0),
       progressText: progressText,
     );
   }
