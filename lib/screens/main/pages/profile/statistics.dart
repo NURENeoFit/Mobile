@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:neofit_mobile/models/user_target_calculation.dart';
 import 'package:neofit_mobile/models/user_meal.dart';
 import 'package:neofit_mobile/providers/user/user_target_calculation_provider.dart';
+import 'package:neofit_mobile/providers/user/user_profile_provider.dart';
 import 'package:neofit_mobile/services/user/user_meal_service.dart';
 
 final userMealsProvider = FutureProvider<List<UserMeal>>((ref) async {
@@ -30,14 +31,18 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     });
   }
 
-  void _shareResult(List<UserTargetCalculation> data) {
+  void _shareResult(List<UserTargetCalculation> data, double currentWeight, int heightCm) {
     if (data.isEmpty) return;
     final latest = data.first;
+
     final message = '📊 My Progress:\n\n'
-        'Target date: ${latest.calculatedTargetDate.toIso8601String().split('T').first}\n'
-        'Weight: ${latest.calculatedWeight} kg\n'
-        'Calories: ${latest.calculatedNormalCalories} kcal\n\n'
-        'Tracking my results with Neofit!';
+        '👤 Current weight: ${currentWeight.toStringAsFixed(1)} kg\n\n'
+        '📏 Height: ${heightCm} cm\n\n'
+        '🎯 Target date: ${latest.calculatedTargetDate.toIso8601String().split('T').first}\n\n'
+        '🏁 Goal weight: ${latest.calculatedWeight.toStringAsFixed(1)} kg\n\n'
+        '🔥 Daily calories: ${latest.calculatedNormalCalories} kcal\n\n'
+        'Tracking my results with Neofit! 💪';
+
     Share.share(message);
   }
 
@@ -48,6 +53,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
 
     final calculationAsync = ref.watch(userTargetCalculationNotifierProvider);
     final mealsAsync = ref.watch(userMealsProvider);
+    final profileAsync = ref.watch(userProfileNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +63,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (data) {
-          if (data.isEmpty) {
+          if (data.isEmpty || profileAsync is! AsyncData) {
             return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -72,6 +78,10 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
               ),
             );
           }
+
+          final profile = profileAsync.value!;
+          final currentWeight = profile.personalData.weightKg;
+          final heightCm = profile.personalData.heightCm;
 
           final List<UserTargetCalculation> weightData = [...data]
             ..sort((a, b) => b.calculatedTargetDate.compareTo(a.calculatedTargetDate));
@@ -311,7 +321,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ElevatedButton.icon(
-                  onPressed: () => _shareResult(weightData),
+                  onPressed: () => _shareResult(weightData, currentWeight, heightCm),
                   icon: const Icon(Icons.share),
                   label: const Text('Share Result'),
                   style: ElevatedButton.styleFrom(
