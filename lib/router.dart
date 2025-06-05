@@ -30,8 +30,11 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const RegisterScreen(),
     ),
     GoRoute(
-      path: '/complete_profile',
-      builder: (context, state) => const CompleteProfilePage(),
+      path: '/complete-profile',
+      builder: (context, state) {
+        final isEdit = state.uri.queryParameters['edit'] == 'true';
+        return CompleteProfilePage(isEditMode: isEdit);
+      },
     ),
     // Main screen (home) route
     GoRoute(

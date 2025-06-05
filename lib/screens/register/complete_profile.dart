@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:neofit_mobile/models/user/program_goal.dart';
@@ -8,7 +9,8 @@ import 'package:neofit_mobile/providers/user/user_profile_provider.dart';
 import 'package:neofit_mobile/providers/user/user_target_calculation_provider.dart';
 
 class CompleteProfilePage extends ConsumerStatefulWidget {
-  const CompleteProfilePage({super.key});
+  final bool isEditMode;
+  const CompleteProfilePage({super.key, this.isEditMode = false});
 
   @override
   ConsumerState<CompleteProfilePage> createState() => _CompleteProfilePageState();
@@ -30,9 +32,23 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
   DateTime? _selectedDateOfBirth;
 
   String? _targetWeightErrorText;
+  bool _initializedFromProfile = false;
 
   bool get _shouldEnterTargetWeight =>
       _selectedGoalType == GoalType.weightLoss || _selectedGoalType == GoalType.muscleGain;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.isEditMode) {
+      Future.microtask(() {
+        ref.read(userProfileNotifierProvider.notifier).refresh();
+        ref.read(userTargetCalculationNotifierProvider.notifier).refresh();
+        ref.refresh(lastUserTargetCalculationProvider);
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -56,6 +72,9 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
   }
 
   Future<void> _onSave() async {
+    final profile = ref.read(userProfileNotifierProvider).value;
+    final lastCalculation = ref.read(lastUserTargetCalculationProvider).value;
+
     final age = _calculateAge(_selectedDateOfBirth);
     final currentWeight = double.tryParse(_weightController.text) ?? 0.0;
     final targetWeight = _shouldEnterTargetWeight
@@ -71,7 +90,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         });
         return;
       }
-
       if (_selectedGoalType == GoalType.muscleGain && targetWeight <= currentWeight) {
         setState(() {
           _targetWeightErrorText = 'Target must be greater than current weight';
@@ -98,39 +116,44 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         activityLevel: _selectedActivityLevel!.name,
       );
 
-      final todayPlus30 = DateTime.now().add(const Duration(days: 30));
-      final onlyDate = DateTime(todayPlus30.year, todayPlus30.month, todayPlus30.day);
+      final DateTime onlyDate;
+      if (widget.isEditMode && lastCalculation != null) {
+        onlyDate = lastCalculation.calculatedTargetDate;
+      } else {
+        final todayPlus30 = DateTime.now().add(const Duration(days: 30));
+        onlyDate = DateTime(todayPlus30.year, todayPlus30.month, todayPlus30.day);
+      }
 
-      const double maintenanceCalories = 2200;
-      const int kcalPerKg = 7700;
-      const int durationDays = 30;
+      final random = Random();
+      final calculatedCalories = 1800 + random.nextInt(6000 - 1800 + 1);
 
-      final weightDelta = targetWeight - currentWeight;
-      final totalKcalChange = weightDelta * kcalPerKg;
-      final dailyAdjustment = totalKcalChange / durationDays;
-
-      final calculatedCalories = maintenanceCalories + dailyAdjustment;
-
-      final calculation = UserTargetCalculation(
+      final newCalculation = UserTargetCalculation(
         calculatedNormalCalories: calculatedCalories.round(),
         calculatedWeight: targetWeight,
         calculatedTargetDate: onlyDate,
       );
 
-      await ref.read(userTargetCalculationNotifierProvider.notifier).addCalculation(calculation);
+      final bool isNewGoal = lastCalculation == null ||
+          (profile?.personalData.goal.goalType != _selectedGoalType);
+
+      if (!widget.isEditMode || isNewGoal) {
+        await ref.read(userTargetCalculationNotifierProvider.notifier)
+            .addCalculation(newCalculation);
+      } else {
+        await ref.read(userTargetCalculationNotifierProvider.notifier)
+            .updateLastCalculationIfNeeded(newCalculation);
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Center(child: Text('Profile completed!'))),
+          SnackBar(content: Center(child: Text(widget.isEditMode ? 'Changes saved!' : 'Profile completed!'))),
         );
         context.go('/');
       }
     }
   }
 
-  void _onSkip() {
-    context.go('/');
-  }
+  void _onSkip() => context.go('/');
 
   Future<void> _pickDateOfBirth(BuildContext context) async {
     final initialDate = _selectedDateOfBirth ?? DateTime(2000, 1, 1);
@@ -141,18 +164,48 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
       lastDate: DateTime.now(),
     );
     if (picked != null) {
-      setState(() {
-        _selectedDateOfBirth = picked;
-      });
+      setState(() => _selectedDateOfBirth = picked);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final profileAsync = ref.watch(userProfileNotifierProvider);
+    final targetCalcAsync = ref.watch(lastUserTargetCalculationProvider);
+
+    if (widget.isEditMode && (profileAsync.isLoading || targetCalcAsync.isLoading)) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final profile = profileAsync.value;
+    final targetCalc = targetCalcAsync.value;
+
+    if (widget.isEditMode && profile != null && !_initializedFromProfile) {
+      _firstNameController.text = profile.user.userFirstName ?? '';
+      _lastNameController.text = profile.user.userLastName ?? '';
+      _phoneController.text = profile.user.userPhone ?? '';
+      _weightController.text = profile.personalData.weightKg.toString();
+      _heightController.text = profile.personalData.heightCm.toString();
+      _selectedDateOfBirth = profile.user.userDob;
+      _selectedGender = profile.personalData.gender;
+      _selectedActivityLevel = profile.personalData.activityLevel;
+      _selectedGoalType = profile.personalData.goal.goalType;
+
+      if (_shouldEnterTargetWeight &&
+          targetCalc != null &&
+          targetCalc.calculatedWeight > 0) {
+        _targetWeightController.text = targetCalc.calculatedWeight.toString();
+      }
+
+      _initializedFromProfile = true;
+    }
+
     final age = _calculateAge(_selectedDateOfBirth);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Complete Profile')),
+      appBar: AppBar(title: Text(widget.isEditMode ? 'Edit Profile' : 'Complete Profile')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -190,25 +243,13 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                       ),
                       controller: TextEditingController(
                         text: _selectedDateOfBirth != null
-                            ? "${_selectedDateOfBirth!.year}-${_selectedDateOfBirth!.month.toString().padLeft(2, '0')}-${_selectedDateOfBirth!.day.toString().padLeft(2, '0')}"
+                            ? '${_selectedDateOfBirth!.year}-${_selectedDateOfBirth!.month.toString().padLeft(2, '0')}-${_selectedDateOfBirth!.day.toString().padLeft(2, '0')}'
                             : '',
                       ),
                       validator: (_) {
-                        if (_selectedDateOfBirth == null) {
-                          return 'Select date of birth';
-                        }
-
-                        final today = DateTime.now();
-                        final age = today.year - _selectedDateOfBirth!.year -
-                            ((today.month < _selectedDateOfBirth!.month ||
-                                (today.month == _selectedDateOfBirth!.month && today.day < _selectedDateOfBirth!.day))
-                                ? 1
-                                : 0);
-
-                        if (age < 12) {
-                          return 'You must be at least 12 years old';
-                        }
-
+                        if (_selectedDateOfBirth == null) return 'Select date of birth';
+                        final age = _calculateAge(_selectedDateOfBirth);
+                        if (age != null && age < 12) return 'You must be at least 12 years old';
                         return null;
                       },
                     ),
@@ -238,19 +279,10 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   decoration: const InputDecoration(labelText: 'Weight (kg)'),
                   keyboardType: TextInputType.number,
                   validator: (v) {
-                    if (v == null || v.isEmpty) {
-                      return 'Enter weight';
-                    }
-
+                    if (v == null || v.isEmpty) return 'Enter weight';
                     final numValue = double.tryParse(v);
-                    if (numValue == null) {
-                      return 'Enter a valid number';
-                    }
-
-                    if (numValue < 30 || numValue > 200) {
-                      return 'Weight must be between 30 and 200 kg';
-                    }
-
+                    if (numValue == null) return 'Enter a valid number';
+                    if (numValue < 30 || numValue > 200) return 'Weight must be between 30 and 200 kg';
                     return null;
                   },
                 ),
@@ -260,19 +292,10 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   decoration: const InputDecoration(labelText: 'Height (cm)'),
                   keyboardType: TextInputType.number,
                   validator: (v) {
-                    if (v == null || v.isEmpty) {
-                      return 'Enter height';
-                    }
-
+                    if (v == null || v.isEmpty) return 'Enter height';
                     final numValue = double.tryParse(v);
-                    if (numValue == null) {
-                      return 'Enter a valid number';
-                    }
-
-                    if (numValue < 120 || numValue > 240) {
-                      return 'Height must be between 120 and 240 cm';
-                    }
-
+                    if (numValue == null) return 'Enter a valid number';
+                    if (numValue < 120 || numValue > 240) return 'Height must be between 120 and 240 cm';
                     return null;
                   },
                 ),
@@ -294,10 +317,7 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                   value: _selectedGoalType,
                   decoration: const InputDecoration(labelText: 'Goal'),
                   items: GoalType.values.map((g) {
-                    return DropdownMenuItem(
-                      value: g,
-                      child: Text(g.toString()),
-                    );
+                    return DropdownMenuItem(value: g, child: Text(g.toString()));
                   }).toList(),
                   onChanged: (g) => setState(() => _selectedGoalType = g),
                   validator: (v) => v == null ? 'Select goal' : null,
@@ -312,19 +332,10 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                     ),
                     keyboardType: TextInputType.number,
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return 'Enter weight';
-                      }
-
+                      if (v == null || v.isEmpty) return 'Enter target weight';
                       final numValue = double.tryParse(v);
-                      if (numValue == null) {
-                        return 'Enter a valid number';
-                      }
-
-                      if (numValue < 30 || numValue > 200) {
-                        return 'Weight must be between 30 and 200 kg';
-                      }
-
+                      if (numValue == null) return 'Enter a valid number';
+                      if (numValue < 30 || numValue > 200) return 'Weight must be between 30 and 200 kg';
                       return null;
                     },
                   ),
@@ -341,7 +352,7 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _onSave,
-                        child: const Text('Save'),
+                        child: Text(widget.isEditMode ? 'Save Changes' : 'Save Profile'),
                       ),
                     ),
                   ],

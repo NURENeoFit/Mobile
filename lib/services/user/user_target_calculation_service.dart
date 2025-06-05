@@ -49,4 +49,19 @@ class UserTargetCalculationService {
     }
     return null;
   }
+
+  Future<UserTargetCalculation?> updateLastUserTargetCalculation(UserTargetCalculation updated) async {
+    try {
+      final response = await _dio.put(
+        '/userTargetCalculations/update-last',
+        data: updated.toJson(),
+      );
+      if (response.statusCode == 200) {
+        return UserTargetCalculation.fromJson(response.data);
+      }
+    } catch (e) {
+      print('Error updating target calculation: $e');
+    }
+    return null;
+  }
 }

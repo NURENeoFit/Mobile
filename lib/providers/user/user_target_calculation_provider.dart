@@ -25,6 +25,14 @@ class UserTargetCalculationNotifier extends AsyncNotifier<List<UserTargetCalcula
     }
   }
 
+  Future<void> updateLastCalculationIfNeeded(UserTargetCalculation updated) async {
+    final service = UserTargetCalculationService();
+    final result = await service.updateLastUserTargetCalculation(updated);
+    if (result != null) {
+      await refresh();
+    }
+  }
+
   Future<void> refresh() async {
     state = const AsyncLoading();
     final data = await UserTargetCalculationService().fetchUserTargetCalculations();
