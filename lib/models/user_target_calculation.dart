@@ -9,12 +9,20 @@ class UserTargetCalculation {
     required this.calculatedTargetDate,
   });
 
-  factory UserTargetCalculation.fromJson(Map<String, dynamic> json) =>
-      UserTargetCalculation(
-        calculatedNormalCalories: json['calculated_normal_calories'],
-        calculatedWeight: (json['calculated_weight'] as num).toDouble(),
-        calculatedTargetDate: DateTime.parse(json['calculated_target_date']),
-      );
+  factory UserTargetCalculation.fromJson(Map<String, dynamic> json) {
+    DateTime parsedDate;
+    try {
+      parsedDate = DateTime.parse(json['calculated_target_date'] ?? '');
+    } catch (_) {
+      parsedDate = DateTime.now();
+    }
+
+    return UserTargetCalculation(
+      calculatedNormalCalories: json['calculated_normal_calories'] ?? 0,
+      calculatedWeight: (json['calculated_weight'] as num?)?.toDouble() ?? 0.0,
+      calculatedTargetDate: parsedDate,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'calculated_normal_calories': calculatedNormalCalories,

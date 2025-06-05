@@ -61,7 +61,7 @@ class _DetailsPageState extends ConsumerState<DetailsPage> {
             'Height': '${personal.heightCm.round()} cm',
             'Weight': '${personal.weightKg} kg',
             'Units of measurement': 'kg / cm',
-            'Target': personal.goal.description,
+            'Target': personal.goal.toString(),
           };
 
           final recommendations = {

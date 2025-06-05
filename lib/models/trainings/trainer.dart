@@ -22,16 +22,16 @@ class Trainer {
   });
 
   factory Trainer.fromJson(Map<String, dynamic> json) => Trainer(
-    trainerId: json['trainer_id'],
-    trainerFirstName: json['trainer_first_name'],
-    trainerLastName: json['trainer_last_name'],
-    trainerPhone: json['trainer_phone'],
-    trainerExperience: json['trainer_experience'],
-    trainerEmail: json['trainer_email'],
-    trainerUsername: json['trainer_username'],
-    workoutPrograms: (json['workout_programs'] as List<dynamic>)
-        .map((e) => WorkoutProgram.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    trainerId: json['trainer_id'] ?? 0,
+    trainerFirstName: json['trainer_first_name'] ?? '',
+    trainerLastName: json['trainer_last_name'] ?? '',
+    trainerPhone: json['trainer_phone'] ?? '',
+    trainerExperience: json['trainer_experience'] ?? 0,
+    trainerEmail: json['trainer_email'] ?? '',
+    trainerUsername: json['trainer_username'] ?? '',
+    workoutPrograms: (json['workout_programs'] as List?)
+        ?.map((e) => WorkoutProgram.fromJson(e as Map<String, dynamic>))
+        .toList() ?? <WorkoutProgram>[],
   );
 
   Map<String, dynamic> toJson() => {

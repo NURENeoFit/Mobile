@@ -29,20 +29,3 @@ final ColorScheme customColorScheme = ColorScheme.fromSeed(
 
   shadow: Colors.black12,
 );
-
-
-final ColorScheme testColorScheme = ColorScheme.fromSeed(
-  seedColor: Colors.deepPurple,
-  brightness: Brightness.light,
-);
-
-final ColorScheme testColorScheme2 = ColorScheme.light(
-  primary: const Color(0xFF7E57C2),
-  onPrimary: Colors.white,
-  secondary: Colors.teal, //Color(0xFF4CAF50),
-  onSecondary: Colors.white,
-  surface: const Color(0xFFF8F5FA),
-  onSurface: Colors.black87,
-  error: const Color(0xFFE53935),
-  onError: Colors.white,
-);

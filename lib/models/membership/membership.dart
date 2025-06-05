@@ -31,16 +31,22 @@ class Membership {
   });
 
   factory Membership.fromJson(Map<String, dynamic> json) => Membership(
-    price: (json['membership_price'] as num).toDouble(),
-    name: json['membership_name'],
-    description: json['membership_description'],
-    membershipType: MembershipType.values
-        .firstWhere((e) => e.name == json['membership_type']),
-    countOfTraining: json['count_of_training'],
-    type: AmountType.values
-        .firstWhere((e) => e.name == json['type']),
-    startDate: json['start_date'],
-    endDate: json['end_date'],
+    price: (json['membership_price'] ?? 0.0) is num
+        ? (json['membership_price'] ?? 0.0).toDouble()
+        : double.tryParse(json['membership_price']?.toString() ?? '0') ?? 0.0,
+    name: json['membership_name'] ?? '',
+    description: json['membership_description'] ?? '',
+    membershipType: MembershipType.values.firstWhere(
+          (e) => e.name == (json['membership_type'] ?? 'gym'),
+      orElse: () => MembershipType.gym,
+    ),
+    countOfTraining: json['count_of_training'] ?? 0,
+    type: AmountType.values.firstWhere(
+          (e) => e.name == (json['type'] ?? 'individual'),
+      orElse: () => AmountType.individual,
+    ),
+    startDate: json['start_date'] ?? '',
+    endDate: json['end_date'] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

@@ -12,10 +12,10 @@ class Exercise {
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json) => Exercise(
-    exerciseId: json['exercise_id'],
-    name: json['name'],
-    duration: json['duration'],
-    burnedCalories: json['burned_calories'],
+    exerciseId: json['exercise_id'] ?? -1,
+    name: json['name'] ?? '',
+    duration: json['duration'] ?? 0,
+    burnedCalories: json['burned_calories'] ?? 0,
   );
 
   Map<String, dynamic> toJson() => {

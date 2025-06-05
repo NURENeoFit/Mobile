@@ -31,13 +31,28 @@ class UserMeal {
     );
   }
 
-  factory UserMeal.fromJson(Map<String, dynamic> json) => UserMeal(
-    id: json['id'],
-    type: MealType.values.firstWhere((e) => e.name == json['type']),
-    calories: json['calories'],
-    createdTime: DateTime.parse(json['created_time']),
-    notes: json['notes'],
-  );
+  factory UserMeal.fromJson(Map<String, dynamic> json) {
+    final typeStr = json['type'] ?? '';
+    final mealType = MealType.values.firstWhere(
+          (e) => e.name == typeStr,
+      orElse: () => MealType.breakfast,
+    );
+
+    DateTime created;
+    try {
+      created = DateTime.parse(json['created_time'] ?? '');
+    } catch (_) {
+      created = DateTime.now();
+    }
+
+    return UserMeal(
+      id: json['id'],
+      type: mealType,
+      calories: json['calories'] ?? 0,
+      createdTime: created,
+      notes: json['notes'] ?? '',
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     if (id != null) 'id': id,

@@ -18,15 +18,22 @@ class Training {
   });
 
   factory Training.fromJson(Map<String, dynamic> json) {
+    DateTime parsedDate;
+    try {
+      parsedDate = DateTime.parse(json['date_of_day'] ?? '');
+    } catch (_) {
+      parsedDate = DateTime.now();
+    }
+
     return Training(
       specializationName: json['specialization_name'] ?? '',
       fitnessRoomName: json['fitness_room_name'] ?? '',
-      date: DateTime.parse(json['date_of_day']),
+      date: parsedDate,
       startTime: json['start_time'] ?? '',
       endTime: json['end_time'] ?? '',
       fullNameTrainer:
       '${json['trainer_first_name'] ?? ''} ${json['trainer_last_name'] ?? ''}'.trim(),
-      isGroup: json['is_group'] ?? '',
+      isGroup: json['is_group'] ?? false,
     );
   }
 

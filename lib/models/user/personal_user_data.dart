@@ -21,12 +21,20 @@ class PersonalUserData {
   });
 
   factory PersonalUserData.fromJson(Map<String, dynamic> json) => PersonalUserData(
-    goal: ProgramGoal.fromJson(json['goal']),
-    weightKg: (json['weight_kg'] as num).toDouble(),
-    heightCm: (json['height_cm'] as num).toDouble(),
-    age: json['age'],
-    gender: Gender.values.firstWhere((e) => e.name == json['gender']),
-    activityLevel: ActivityLevel.values.firstWhere((e) => e.name == json['activity_level']),
+    goal: json['goal'] != null
+        ? ProgramGoal.fromJson(json['goal'] as Map<String, dynamic>)
+        : ProgramGoal(goalType: GoalType.generalFitness, description: ''),
+    weightKg: (json['weight_kg'] as num?)?.toDouble() ?? 0.0,
+    heightCm: (json['height_cm'] as num?)?.toDouble() ?? 0.0,
+    age: json['age'] ?? 0,
+    gender: Gender.values.firstWhere(
+          (e) => e.name == (json['gender'] ?? ''),
+      orElse: () => Gender.male,
+    ),
+    activityLevel: ActivityLevel.values.firstWhere(
+          (e) => e.name == (json['activity_level'] ?? ''),
+      orElse: () => ActivityLevel.low,
+    ),
   );
 
   Map<String, dynamic> toJson() => {

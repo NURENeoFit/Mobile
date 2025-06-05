@@ -21,14 +21,14 @@ class WorkoutProgram {
   });
 
   factory WorkoutProgram.fromJson(Map<String, dynamic> json) => WorkoutProgram(
-    workoutProgramId: json['workout_training_id'],
-    name: json['program_name'],
-    trainerId: json['trainer_id'],
-    duration: json['duration'],
-    programType: json['program_type'],
-    exercises: (json['exercises'] as List<dynamic>)
-        .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    workoutProgramId: json['workout_training_id'] ?? 0,
+    name: json['program_name'] ?? '',
+    trainerId: json['trainer_id'] ?? 0,
+    duration: json['duration'] ?? 0,
+    programType: json['program_type'] ?? '',
+    exercises: (json['exercises'] as List?)
+        ?.map((e) => Exercise.fromJson(e as Map<String, dynamic>))
+        .toList() ?? <Exercise>[],
     icon: json['icon'] ?? '',
   );
 
