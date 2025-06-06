@@ -38,7 +38,7 @@ class UserTargetCalculationService {
   Future<UserTargetCalculation?> addUserTargetCalculation(UserTargetCalculation calculation) async {
     try {
       final response = await _dio.post(
-        '/userTargetCalculations',
+        '/userTargetCalculations/add',
         data: calculation.toJson(),
       );
       if (response.statusCode == 201 || response.statusCode == 200) {

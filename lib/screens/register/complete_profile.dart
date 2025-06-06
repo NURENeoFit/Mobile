@@ -116,12 +116,15 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         activityLevel: _selectedActivityLevel!.name,
       );
 
+      final bool isNewGoal = lastCalculation == null ||
+          (profile?.personalData.goal.goalType != _selectedGoalType);
+
       final DateTime onlyDate;
-      if (widget.isEditMode && lastCalculation != null) {
-        onlyDate = lastCalculation.calculatedTargetDate;
-      } else {
+      if (!widget.isEditMode || isNewGoal) {
         final todayPlus30 = DateTime.now().add(const Duration(days: 30));
         onlyDate = DateTime(todayPlus30.year, todayPlus30.month, todayPlus30.day);
+      } else {
+        onlyDate = lastCalculation!.calculatedTargetDate;
       }
 
       final random = Random();
@@ -132,9 +135,6 @@ class _CompleteProfilePageState extends ConsumerState<CompleteProfilePage> {
         calculatedWeight: targetWeight,
         calculatedTargetDate: onlyDate,
       );
-
-      final bool isNewGoal = lastCalculation == null ||
-          (profile?.personalData.goal.goalType != _selectedGoalType);
 
       if (!widget.isEditMode || isNewGoal) {
         await ref.read(userTargetCalculationNotifierProvider.notifier)

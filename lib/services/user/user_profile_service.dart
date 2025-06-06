@@ -15,7 +15,7 @@ class UserProfileService {
       if (userResponse.statusCode != 200) return null;
       final userJson = userResponse.data;
 
-      final pudResponse = await _dio.get('/personal_user_data/me');
+      final pudResponse = await _dio.get('/personalUserData/me');
       //queryParameters: {'user_id': userJson['user_id']}
 
       if (pudResponse.statusCode != 200) return null;
@@ -87,7 +87,7 @@ class UserProfileService {
         if (gender != null) 'gender': gender,
         if (activityLevel != null) 'activity_level': activityLevel,
       };
-      await _dio.patch('/personal-user-data/me', data: data);
+      await _dio.patch('/personalUserData/me', data: data);
     } catch (e) {
       print('Error updating personal user data: $e');
       rethrow;
