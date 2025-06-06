@@ -182,7 +182,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${training.startTime} • ${training.isGroup ? 'Group' : 'Individual'}',
+                                  '${training.startTime} - ${training.endTime}',
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                                   ),

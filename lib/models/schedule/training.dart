@@ -5,7 +5,6 @@ class Training {
   final String startTime;
   final String endTime;
   final String fullNameTrainer;
-  final bool isGroup;
 
   const Training({
     required this.specializationName,
@@ -14,7 +13,6 @@ class Training {
     required this.startTime,
     required this.endTime,
     required this.fullNameTrainer,
-    required this.isGroup,
   });
 
   factory Training.fromJson(Map<String, dynamic> json) {
@@ -33,7 +31,6 @@ class Training {
       endTime: json['end_time'] ?? '',
       fullNameTrainer:
       '${json['trainer_first_name'] ?? ''} ${json['trainer_last_name'] ?? ''}'.trim(),
-      isGroup: json['is_group'] ?? false,
     );
   }
 
@@ -44,6 +41,5 @@ class Training {
     'start_time': startTime,
     'end_time': endTime,
     'full_name_trainer': fullNameTrainer,
-    'is_group': isGroup,
   };
 }
