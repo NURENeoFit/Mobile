@@ -8,7 +8,7 @@ class UserTargetCalculationService {
 
   Future<List<UserTargetCalculation>> fetchUserTargetCalculations() async {
     try {
-      final response = await _dio.get('/userTargetCalculations');
+      final response = await _dio.get('/userTargetCalculations/me');
       final data = response.statusCode == 200 ? response.data : null;
       if (data is List) {
         return data

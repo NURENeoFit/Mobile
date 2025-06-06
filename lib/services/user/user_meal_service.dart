@@ -8,7 +8,7 @@ class UserMealService {
 
   Future<List<UserMeal>> fetchMealsForUser() async {
     try {
-      final response = await _dio.get('/userMeals');
+      final response = await _dio.get('/userMealsN');
       if (response.statusCode == 200 && response.data is List) {
         return (response.data as List)
             .map((e) => UserMeal.fromJson(e))
@@ -22,7 +22,7 @@ class UserMealService {
 
   Future<UserMeal?> getMealByTypeAndDate(MealType type, DateTime date) async {
     try {
-      final response = await _dio.get('/userMeals', queryParameters: {
+      final response = await _dio.get('/userMealsN', queryParameters: {
         'type': type.name,
         'created_time': date.toIso8601String().substring(0, 10), // 'YYYY-MM-DD'
       });
@@ -49,7 +49,7 @@ class UserMealService {
       final updatedCalories = existingMeal.calories + caloriesToAdd;
       try {
         final response = await _dio.patch(
-          '/userMeals/${existingMeal.id}', // use "id" as property name
+          '/userMealsN/${existingMeal.id}', // use "id" as property name
           data: {'calories': updatedCalories},
         );
         if (response.statusCode == 200) {
@@ -61,7 +61,7 @@ class UserMealService {
     } else {
       // Create new meal
       try {
-        final response = await _dio.post('/userMeals', data: {
+        final response = await _dio.post('/userMealsN', data: {
           'type': type.name,
           'calories': caloriesToAdd,
           'created_time': date.toIso8601String().substring(0, 10),
