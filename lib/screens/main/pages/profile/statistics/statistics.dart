@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:neofit_mobile/providers/user/user_meal_provider.dart';
-import 'package:neofit_mobile/screens/main/pages/profile/statistics/widgets/statistics_history.dart';
+import 'package:neofit_mobile/screens/main/pages/profile/statistics/statistics_history.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:neofit_mobile/models/user_target_calculation.dart';
 import 'package:neofit_mobile/models/user_meal.dart';
 import 'package:neofit_mobile/providers/user/user_target_calculation_provider.dart';
 import 'package:neofit_mobile/providers/user/user_profile_provider.dart';
-import 'package:neofit_mobile/screens/main/pages/profile/statistics/widgets/statistics_chart.dart';
 
 class StatisticsPage extends ConsumerStatefulWidget {
   const StatisticsPage({super.key});
@@ -60,19 +59,13 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
     }
 
     if (calculationsAsync.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${calculationsAsync.error}')),
-      );
+      return Scaffold(body: Center(child: Text('Error: ${calculationsAsync.error}')));
     }
     if (mealsAsync.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${mealsAsync.error}')),
-      );
+      return Scaffold(body: Center(child: Text('Error: ${mealsAsync.error}')));
     }
     if (profileAsync.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${profileAsync.error}')),
-      );
+      return Scaffold(body: Center(child: Text('Error: ${profileAsync.error}')));
     }
 
     final List<UserTargetCalculation> data = calculationsAsync.value ?? [];
@@ -145,11 +138,119 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: StatisticsChart(
-                    data: weightDataForChart,
-                    latestWeight: weightData.first.calculatedWeight,
-                    colorScheme: colorScheme,
-                    textTheme: textTheme,
+                  child: weightDataForChart.isEmpty
+                      ? Column(
+                    children: [
+                      Icon(Icons.show_chart, size: 64, color: colorScheme.primary),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No data for chart this year.',
+                        style: textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                      ),
+                    ],
+                  )
+                      : Column(
+                    children: [
+                      Text(
+                        "You're on track to reach ${weightData.first.calculatedWeight} kg",
+                        style: textTheme.titleSmall,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        height: 220,
+                        width: weightDataForChart.length * 70,
+                        child: LineChart(
+                          LineChartData(
+                            minY: minY,
+                            maxY: maxY,
+                            gridData: FlGridData(show: true),
+                            borderData: FlBorderData(show: true),
+                            lineTouchData: LineTouchData(
+                              touchTooltipData: LineTouchTooltipData(
+                                getTooltipItems: (touchedSpots) {
+                                  return touchedSpots.map((spot) {
+                                    return LineTooltipItem(
+                                      '${spot.y.toStringAsFixed(1)} kg',
+                                      textTheme.bodySmall!.copyWith(
+                                        color: colorScheme.onPrimaryContainer,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }).toList();
+                                },
+                              ),
+                            ),
+                            titlesData: FlTitlesData(
+                              leftTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  interval: 1,
+                                  reservedSize: 32,
+                                  getTitlesWidget: (value, _) {
+                                    if (value % 1 == 0) {
+                                      return Text(
+                                        value.toInt().toString(),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: colorScheme.onSurface,
+                                        ),
+                                      );
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                ),
+                              ),
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  interval: 1,
+                                  getTitlesWidget: (value, _) {
+                                    final index = value.toInt();
+                                    if (index < weightDataForChart.length) {
+                                      final date = weightDataForChart[index].calculatedTargetDate;
+                                      return Padding(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          '${date.month}/${date.day}',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: colorScheme.onSurface,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    return const Text('');
+                                  },
+                                ),
+                              ),
+                              rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            ),
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots: spots,
+                                isCurved: true,
+                                barWidth: 3,
+                                color: colorScheme.primary,
+                                belowBarData: BarAreaData(
+                                  show: true,
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      colorScheme.primary.withAlpha(100),
+                                      colorScheme.primary.withAlpha(20),
+                                    ],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                ),
+                                dotData: FlDotData(show: true),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 28),
