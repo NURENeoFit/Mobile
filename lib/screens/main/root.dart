@@ -8,16 +8,10 @@ import 'package:neofit_mobile/widgets/bottom_nav_bar.dart';
 class _ScreenConfig {
   final PreferredSizeWidget? appBar;
   final Widget body;
-  final Widget? fab;
-  final bool showBottomNav;
-  final Color? backgroundColor;
 
   const _ScreenConfig({
     this.appBar,
     required this.body,
-    this.fab,
-    this.showBottomNav = true,
-    this.backgroundColor,
   });
 }
 
@@ -82,16 +76,13 @@ class _MainScreenState extends State<MainScreen> {
     final current = screens[_selectedIndex];
 
     return Scaffold(
-      backgroundColor: current.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: current.appBar,
       body: current.body,
-      floatingActionButton: current.fab,
-      bottomNavigationBar: current.showBottomNav
-          ? CustomBottomNavBar(
+      bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: _selectedIndex,
         onTap: _onTap,
-      )
-          : null,
+      ),
     );
   }
 }

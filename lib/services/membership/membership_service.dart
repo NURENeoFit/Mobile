@@ -8,7 +8,7 @@ class MembershipService {
 
   Future<Membership?> fetchMembershipForUser() async {
     try {
-      final response = await _dio.get('/memberships/1');
+      final response = await _dio.get('/memberships/1'); //UserMembership/active
 
       final data = response.statusCode == 200 ? response.data : null;
 

@@ -11,7 +11,7 @@ class UserProfileService {
 
   Future<FullUserProfile?> fetchUserProfile() async {
     try {
-      final userResponse = await _dio.get('/users/1');
+      final userResponse = await _dio.get('/users/1'); //User/login
       if (userResponse.statusCode != 200) return null;
       final userJson = userResponse.data;
 
