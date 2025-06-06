@@ -1,6 +1,5 @@
 class Training {
   final String specializationName;
-  final String fitnessRoomName;
   final DateTime date;
   final String startTime;
   final String endTime;
@@ -8,7 +7,6 @@ class Training {
 
   const Training({
     required this.specializationName,
-    required this.fitnessRoomName,
     required this.date,
     required this.startTime,
     required this.endTime,
@@ -25,7 +23,6 @@ class Training {
 
     return Training(
       specializationName: json['specialization_name'] ?? '',
-      fitnessRoomName: json['fitness_room_name'] ?? '',
       date: parsedDate,
       startTime: json['start_time'] ?? '',
       endTime: json['end_time'] ?? '',
@@ -36,7 +33,6 @@ class Training {
 
   Map<String, dynamic> toJson() => {
     'specialization_name': specializationName,
-    'fitness_room_name': fitnessRoomName,
     'date': date.toIso8601String(),
     'start_time': startTime,
     'end_time': endTime,
