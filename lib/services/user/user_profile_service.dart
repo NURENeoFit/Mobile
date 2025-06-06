@@ -11,11 +11,11 @@ class UserProfileService {
 
   Future<FullUserProfile?> fetchUserProfile() async {
     try {
-      final userResponse = await _dio.get('/users/1'); //User/login
+      final userResponse = await _dio.get('/user/me'); //User/login
       if (userResponse.statusCode != 200) return null;
       final userJson = userResponse.data;
 
-      final pudResponse = await _dio.get('/personal_user_data/1');
+      final pudResponse = await _dio.get('/personal_user_data/me');
       //queryParameters: {'user_id': userJson['user_id']}
 
       if (pudResponse.statusCode != 200) return null;

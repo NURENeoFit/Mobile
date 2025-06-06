@@ -3,7 +3,7 @@ import 'package:neofit_mobile/utils/auth_storage.dart';
 
 class DioClient {
   static final Dio _dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.0.77:5000',
+    baseUrl: 'https://db-73ne.onrender.com/',
     connectTimeout: const Duration(seconds: 3),
     receiveTimeout: const Duration(seconds: 3),
     headers: {
